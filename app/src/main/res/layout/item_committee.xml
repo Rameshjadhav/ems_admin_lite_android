@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:minHeight="40dp"
+    android:orientation="horizontal"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:weightSum="1">
+
+
+    <TextView
+        android:id="@+id/wardNameText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1"
+        android:gravity="center"
+        android:text="@string/booth_no"
+        android:textColor="@color/theme_color" />
+
+    <TextView
+        android:id="@+id/nameText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.4"
+        android:gravity="center"
+
+        android:text="@string/voter_name"
+        android:textColor="@color/theme_color" />
+
+    <TextView
+        android:id="@+id/designationText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:gravity="center"
+        android:text="@string/voter_no"
+        android:textColor="@color/theme_color" />
+
+    <TextView
+        android:id="@+id/mobileNumberText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.3"
+        android:drawablePadding="@dimen/dp_5"
+        android:gravity="center"
+        android:text="@string/age"
+        android:textColor="@color/theme_color"
+        app:drawableStartCompat="@android:drawable/sym_call_outgoing" />
+
+</LinearLayout>

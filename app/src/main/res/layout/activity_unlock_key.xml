@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbarLayout"
+            layout="@layout/toolbar_layout" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_mob"
+            style="@style/EditTextStyle"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_15"
+            android:background="@drawable/edit_bg_gray"
+            android:gravity="center"
+            android:hint="@string/enter_your_mobile_no"
+            android:inputType="number"
+            android:maxLength="10"
+            android:minHeight="30dp"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/theme_color"
+            android:textSize="20sp"
+            tools:ignore="UsingOnClickInXml" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_yourcode"
+            style="@style/EditTextStyle"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_15"
+            android:background="@drawable/edit_bg_gray"
+            android:gravity="center"
+            android:hint="@string/your_code"
+            android:inputType="number"
+            android:minHeight="30dp"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/theme_color"
+            android:textSize="20sp"
+            tools:ignore="UsingOnClickInXml" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_unlockcode"
+            style="@style/EditTextStyle"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_15"
+            android:background="@drawable/edit_bg_gray"
+            android:gravity="center"
+            android:visibility="gone"
+            android:hint="@string/enter_unlock_code"
+            android:inputType="number"
+            android:minHeight="30dp"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/theme_color"
+            android:textSize="20sp"
+            tools:ignore="UsingOnClickInXml" />
+
+        <TextView
+            android:id="@+id/btnstartnew"
+            style="@style/ButtonStyle"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_20"
+            android:background="@drawable/theme_btn_bg"
+            android:gravity="center"
+            android:onClick="btnstart"
+            android:text="@string/start"
+            android:textColor="@color/white_in_both_theme" />
+    </LinearLayout>
+</layout>

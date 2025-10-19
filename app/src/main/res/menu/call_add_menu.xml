@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/call_meu"
+        android:icon="@android:drawable/sym_call_outgoing"
+        android:title="@string/ward_no"
+        android:orderInCategory="1"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/add_meu"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="@string/ward_no"
+        android:orderInCategory="1"
+        app:showAsAction="ifRoom"
+        />
+</menu>

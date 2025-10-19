@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "12354337851",
+    "project_id": "ems-admin-e8050",
+    "storage_bucket": "ems-admin-e8050.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12354337851:android:b2af75bf34fdd8e848301e",
+        "android_client_info": {
+          "package_name": "com.ems.lite.admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEtPmkmR4w31QwbC1Ff1UKuQee7Sh5kM0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

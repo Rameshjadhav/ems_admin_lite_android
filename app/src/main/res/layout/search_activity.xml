@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="onClickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="adapter"
+            type="com.ems.lite.admin.ui.adapters.VoterListAdapter" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_color"
+        tools:context=".MainActivity">
+
+        <include
+            android:id="@+id/toolbarLayout"
+            layout="@layout/toolbar_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbarLayout">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/ll_filter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="@{onClickListener}"
+                android:padding="@dimen/dp_5">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/filter"
+                    android:textSize="@dimen/sp_15" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/down_arrow_black" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cr_filter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_assembly"
+                    style="@style/EditTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:background="@drawable/edit_bg_gray"
+                    android:focusable="false"
+                    android:hint="@string/select_assembly"
+                    android:imeOptions="actionNext"
+                    android:maxLines="1"
+                    android:onClick="@{onClickListener}"
+                    android:singleLine="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_assembly_count"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_assembly_count"
+                    style="@style/TextViewStyleMedium"
+                    android:layout_marginHorizontal="@dimen/dp_8"
+                    android:text=""
+                    app:layout_constraintBottom_toBottomOf="@+id/et_assembly"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/et_assembly"
+                    app:layout_constraintTop_toTopOf="@+id/et_assembly" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_division"
+                    style="@style/EditTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:background="@drawable/edit_bg_gray"
+                    android:focusable="false"
+                    android:hint="@string/select_division"
+                    android:imeOptions="actionNext"
+                    android:maxLines="1"
+                    android:onClick="@{onClickListener}"
+                    android:singleLine="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_division_count"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/et_assembly"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_division_count"
+                    style="@style/TextViewStyleMedium"
+                    android:layout_marginHorizontal="@dimen/dp_8"
+                    android:text=""
+                    app:layout_constraintBottom_toBottomOf="@+id/et_division"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/et_division"
+                    app:layout_constraintTop_toTopOf="@+id/et_division" />
+
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_village"
+                    style="@style/EditTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:background="@drawable/edit_bg_gray"
+                    android:focusable="false"
+                    android:hint="@string/select_village"
+                    android:imeOptions="actionNext"
+                    android:maxLines="1"
+                    android:onClick="@{onClickListener}"
+                    android:singleLine="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_village_count"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/et_division"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_village_count"
+                    style="@style/TextViewStyleMedium"
+                    android:layout_marginHorizontal="@dimen/dp_8"
+                    android:text=""
+                    app:layout_constraintBottom_toBottomOf="@+id/et_village"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/et_village"
+                    app:layout_constraintTop_toTopOf="@+id/et_village" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_booth"
+                    style="@style/EditTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:background="@drawable/edit_bg_gray"
+                    android:focusable="false"
+                    android:hint="@string/select_booth"
+                    android:imeOptions="actionNext"
+                    android:maxLines="1"
+                    android:onClick="@{onClickListener}"
+                    android:singleLine="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_booth_count"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/et_village"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_booth_count"
+                    style="@style/TextViewStyleMedium"
+                    android:layout_marginHorizontal="@dimen/dp_8"
+                    android:text=""
+                    app:layout_constraintBottom_toBottomOf="@+id/et_booth"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/et_booth"
+                    app:layout_constraintTop_toTopOf="@+id/et_booth" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_5"
+                android:text="@string/search_by"
+                android:textColor="@color/secondary_text_color"
+                android:textSize="@dimen/sp_15" />
+
+            <RadioGroup
+                android:id="@+id/rg_search_by"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rb_voter_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="@string/name"
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="@dimen/sp_12" />
+
+                <RadioButton
+                    android:id="@+id/rb_voter_no"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/serial_no"
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="@dimen/sp_12" />
+
+                <RadioButton
+                    android:id="@+id/rb_card_no"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/epic_no"
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="@dimen/sp_12" />
+
+                <RadioButton
+                    android:id="@+id/rb_house_no"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/house_no"
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="@dimen/sp_12" />
+
+            </RadioGroup>
+
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_search"
+                style="@style/EditTextStyle"
+                android:layout_height="@dimen/dp_40"
+                android:layout_marginTop="@dimen/dp_5"
+                android:background="@drawable/edit_bg_gray"
+                android:hint="@string/search_all"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lbl_select_booth"
+                tools:ignore="Autofill,LabelFor,TextFields" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cr_name_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_first_name"
+                    style="@style/EditTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:background="@drawable/edit_bg_gray"
+                    android:hint="@string/first_name"
+                    android:imeOptions="actionNext"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/et_middle_name"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_middle_name"
+                    style="@style/EditTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:background="@drawable/edit_bg_gray"
+                    android:hint="@string/middle_name"
+                    android:imeOptions="actionNext"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/et_last_name"
+                    app:layout_constraintStart_toEndOf="@+id/et_first_name"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_last_name"
+                    style="@style/EditTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:background="@drawable/edit_bg_gray"
+                    android:hint="@string/last_name"
+                    android:imeOptions="actionNext"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/et_middle_name"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/lbl_Add_by_voter_no"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_5"
+                android:text="@string/add_by_voter_no"
+                android:textColor="@color/secondary_text_color"
+                android:textSize="@dimen/sp_15"
+                android:visibility="gone" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/ll_add_voter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_5"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_voter_from"
+                    style="@style/EditTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/edit_bg_gray"
+                    android:hint="@string/from"
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+                    android:maxLength="10"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_voter_to"
+                    style="@style/EditTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_weight="1"
+                    android:background="@drawable/edit_bg_gray"
+                    android:hint="@string/to"
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+                    android:maxLength="10"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_add_voter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:background="@drawable/theme_border"
+                    android:onClick="@{onClickListener}"
+                    android:text="@string/add"
+                    android:textColor="@color/white_in_both_theme" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:adapter="@{adapter}"
+                    android:nestedScrollingEnabled="false"
+                    android:orientation="vertical"
+                    android:scrollbars="none"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toTopOf="@+id/ll_load_more"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/ll_load_more"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <include layout="@layout/layout_load_more" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

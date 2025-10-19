@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="onClickListener"
+            type="android.view.View.OnClickListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_color">
+
+        <include
+            android:id="@+id/toolbarLayout"
+            layout="@layout/toolbar_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dp_10"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_15"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbarLayout">
+
+            <ScrollView
+                android:id="@+id/scroll_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scrollbars="none"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.866">
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/lbl_name"
+                        style="@style/TextViewStyleRegular"
+                        android:text="@string/name"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/et_name"
+                        style="@style/EditTextStyle"
+                        android:layout_marginTop="@dimen/dp_5"
+                        android:alpha="0.5"
+                        android:background="@drawable/edit_bg_gray"
+                        android:focusable="false"
+                        android:imeOptions="actionNext"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/lbl_name"
+                        tools:ignore="Autofill,LabelFor,TextFields" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/lbl_select_village"
+                        style="@style/TextViewStyleRegular"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:text="@string/select_village_colony"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/et_name" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/et_village"
+                        style="@style/EditTextStyle"
+                        android:layout_marginTop="@dimen/dp_5"
+                        android:background="@drawable/edit_bg_gray"
+                        android:focusable="false"
+                        android:hint="@string/select_village_colony"
+                        android:imeOptions="actionNext"
+                        android:maxLines="1"
+                        android:onClick="@{onClickListener}"
+                        android:singleLine="true"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/lbl_select_village"
+                        tools:ignore="Autofill,LabelFor,TextFields" />
+
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/cr_booth"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/et_village">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/lbl_select_booth"
+                            style="@style/TextViewStyleRegular"
+                            android:layout_marginTop="@dimen/dp_20"
+                            android:text="@string/select_booth"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tv_booth_count"
+                            style="@style/TextViewStyleMedium"
+                            android:layout_marginTop="@dimen/dp_20"
+                            android:text="@string/select_booth"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <RadioGroup
+                            android:id="@+id/rg_booth"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/lbl_select_booth">
+
+                            <RadioButton
+                                android:id="@+id/rb_all"
+                                style="@style/TextViewStyleRegular"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:checked="true"
+                                android:text="@string/all" />
+
+                            <RadioButton
+                                android:id="@+id/rb_single"
+                                style="@style/TextViewStyleRegular"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/single" />
+
+                            <RadioButton
+                                android:id="@+id/rb_from_to"
+                                style="@style/TextViewStyleRegular"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/from_to" />
+
+                            <RadioButton
+                                android:id="@+id/rb_custom"
+                                style="@style/TextViewStyleRegular"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/custom" />
+                        </RadioGroup>
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/et_booth_from"
+                            style="@style/EditTextStyle"
+                            android:layout_width="0dp"
+                            android:layout_marginTop="@dimen/dp_5"
+                            android:background="@drawable/edit_bg_gray"
+                            android:hint="@string/from"
+                            android:imeOptions="actionNext"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toStartOf="@+id/et_booth_to"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/rg_booth"
+                            tools:ignore="Autofill,LabelFor,TextFields" />
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/et_booth_to"
+                            style="@style/EditTextStyle"
+                            android:layout_width="0dp"
+                            android:layout_marginStart="@dimen/dp_10"
+                            android:layout_marginTop="@dimen/dp_5"
+                            android:background="@drawable/edit_bg_gray"
+                            android:hint="@string/to"
+                            android:imeOptions="actionNext"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/et_booth_from"
+                            app:layout_constraintTop_toBottomOf="@+id/rg_booth"
+                            tools:ignore="Autofill,LabelFor,TextFields" />
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/et_single"
+                            style="@style/EditTextStyle"
+                            android:layout_marginTop="@dimen/dp_5"
+                            android:background="@drawable/edit_bg_gray"
+                            android:hint="@string/booth_no"
+                            android:imeOptions="actionNext"
+                            android:inputType="number"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/rg_booth"
+                            tools:ignore="Autofill,LabelFor,TextFields" />
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/et_custom"
+                            style="@style/EditTextStyle"
+                            android:layout_marginTop="@dimen/dp_5"
+                            android:background="@drawable/edit_bg_gray"
+                            android:digits="1234567890,"
+                            android:hint="@string/booth_no_comma_seperated"
+                            android:imeOptions="actionNext"
+                            android:inputType="number"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/rg_booth"
+                            tools:ignore="Autofill,LabelFor,TextFields" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/lbl_activate_user"
+                        style="@style/TextViewStyleRegular"
+                        android:layout_width="0dp"
+                        android:text="@string/activate_user"
+                        app:layout_constraintBottom_toBottomOf="@+id/activate_toggle"
+                        app:layout_constraintEnd_toStartOf="@+id/activate_toggle"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/activate_toggle" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/activate_toggle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:checked="true"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toEndOf="@+id/lbl_activate_user"
+                        app:layout_constraintTop_toBottomOf="@+id/cr_booth" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/ll_btn_save"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_30"
+                        android:layout_marginBottom="@dimen/dp_20"
+                        android:background="@drawable/rc_theme_c10"
+                        android:gravity="center"
+                        android:minHeight="@dimen/dp_50"
+                        android:onClick="@{onClickListener}"
+                        app:layout_constraintTop_toBottomOf="@+id/activate_toggle">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            style="@style/TextViewStyleRegular"
+                            android:drawablePadding="@dimen/dp_10"
+                            android:fontFamily="@font/avenirltstd_heavy"
+                            android:text="@string/save"
+                            android:textColor="@color/white_in_both_theme" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </ScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

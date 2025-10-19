@@ -1,0 +1,117 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'com.google.dagger.hilt.android'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+}
+
+android {
+    compileSdk 35
+    namespace "com.ems.lite.admin"
+    defaultConfig {
+        applicationId "com.ems.lite.admin"
+        minSdk 26
+        targetSdk 35
+        versionCode Integer.parseInt(version_code)
+        versionName app_version
+        buildConfigField "String", "APP_VERSION", "\"${app_version}\""
+        buildConfigField "String", "API_VERSION", "\"${api_version}\""
+        buildConfigField "String", "CLIENT_ID", "\"" + productionClientId + "\""
+        buildConfigField "String", "CLIENT_SECRET", "\"" + productionClientSecret + "\""
+        buildConfigField "String", "OTHER_LANGUAGE", "\"${other_language}\""
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        debug {
+            storeFile file(keyStoreDebug)
+        }
+
+        release {
+            storeFile file(keyStoreRelease)
+            keyAlias keyStoreAlias
+            keyPassword keyStorePass
+            storePassword keyStoreAliasPass
+        }
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            debuggable true
+            buildConfigField "String", "BASE_URL", "\"${debugBaseUrl}\""
+            buildConfigField "boolean", "ENABLED", "" + true + ""
+        }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            buildConfigField "String", "BASE_URL", "\"${liveBaseUrl}\""
+            buildConfigField "boolean", "ENABLED", "" + true + ""
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    dataBinding {
+        enabled = true
+    }
+    buildFeatures {
+        buildConfig = true
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
+    implementation files('libs\\poi-3.7.jar')
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    // dagger hilt
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-android-compiler:2.48")
+    implementation 'androidx.activity:activity-ktx:1.8.2'
+    implementation "androidx.fragment:fragment-ktx:1.6.2"
+
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"
+
+    // Retrofit
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.3.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava:2.3.0'
+
+    def room = "2.3.0"
+    implementation "androidx.room:room-runtime:$room"
+    implementation "androidx.room:room-ktx:$room"
+    kapt "androidx.room:room-compiler:$room"
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    implementation 'com.github.DantSu:ESCPOS-ThermalPrinter-Android:3.2.0'
+
+    //Swipe Refresh Layout
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01'
+
+    // Image Cropper
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+
+    implementation("com.google.guava:guava:33.0.0-android")
+
+// Custom message
+    implementation 'org.aviran.cookiebar2:cookiebar2:1.1.5'
+
+    implementation 'com.google.firebase:firebase-crashlytics:19.0.0'
+    implementation 'com.google.firebase:firebase-analytics:22.0.0'
+}
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
+}

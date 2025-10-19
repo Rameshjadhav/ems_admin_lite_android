@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="relative"
+            type="com.ems.lite.admin.model.Relative" />
+
+        <variable
+            name="relativeListener"
+            type="com.ems.lite.admin.ui.adapters.RelativeListAdapter.RelativeListener" />
+    </data>
+
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:cardCornerRadius="@dimen/dp_10"
+        app:cardElevation="@dimen/dp_5"
+        app:cardUseCompatPadding="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/rootLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->relativeListener.onItemSelect(relative)}"
+            android:padding="@dimen/dp_10">
+
+            <TextView
+                android:id="@+id/tv_name"
+                style="@style/TextViewStyleMedium"
+                android:layout_width="0dp"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:text='@{relative.relativeName?? ""}'
+                app:layout_constraintEnd_toStartOf="@+id/tv_mobile"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_mobile"
+                style="@style/TextViewStyleRegular"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:drawablePadding="@dimen/dp_5"
+                android:onClick="@{()->relativeListener.onCallClick(relative.relativeNumber)}"
+                android:text='@{relative.relativeNumber?? ""}'
+                android:textColor="@color/theme_color"
+                android:visibility="@{relative.relativeNumber}"
+                app:drawableStartCompat="@drawable/call_theme"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_name"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_village"
+                style="@style/TextViewStyleRegular"
+                android:layout_width="0dp"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:text='@{relative.villageName+", "+relative.talukaName}'
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+
+            <TextView
+                android:id="@+id/tv_profession"
+                style="@style/TextViewStyleRegular"
+                android:layout_width="0dp"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:text='@{relative.professionName?? ""}'
+                android:visibility="@{relative.professionName}"
+                app:layout_constraintEnd_toStartOf="@+id/tv_relation"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_village" />
+
+            <TextView
+                android:id="@+id/tv_relation"
+                style="@style/TextViewStyleRegular"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:text='@{relative.headRelation?? ""}'
+                android:visibility="@{relative.headRelation}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@+id/tv_profession"
+                app:layout_constraintTop_toBottomOf="@+id/tv_village" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

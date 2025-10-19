@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="theme_color">@color/top</color>
+
+    <!--    <color name="top">#FC6D04</color>-->
+    <!--    <color name="center">#9AEA98</color>-->
+    <!--    <color name="bottom">#118810</color>-->
+
+    <!--    <color name="top">#FC6D04</color>-->
+    <!--    <color name="center">#FFFFFF</color>-->
+    <!--    <color name="bottom">#118810</color>-->
+
+    <!--    <color name="top">#FF32B9</color>-->
+    <!--    <color name="center">#FBF4AA</color>-->
+    <!--    <color name="bottom">#F3DF17</color>-->
+
+    <color name="top">#FF5B00</color>
+    <color name="center">#FFB759</color>
+    <color name="bottom">#FEC409</color>
+
+    <color name="theme_text_color">#018786</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="white_in_both_theme">#FFFFFF</color>
+    <color name="brown">#964B00</color>
+    <color name="background_color">#FFFFFF</color>
+    <color name="active_bg_color">#C5FFC4</color>
+    <color name="inactive_bg_color">#F7D1AB</color>
+    <color name="primary_text_color">#17171A</color>
+    <color name="secondary_text_color">#8E8F90</color>
+    <color name="et_hint_color">#A4A8A5</color>
+    <color name="et_text_color">#18211B</color>
+    <color name="et_bg_color">#ECECEC</color>
+    <color name="red_text_color">#FF0000</color>
+    <color name="divider_color">#8E99A3</color>
+    <color name="red">#DA2626</color>
+    <color name="card_bg_color">#FFFFFF</color>
+    <color name="tab_selected_text_color">#018786</color>
+    <color name="tab_unselected_text_color">#797979</color>
+    <color name="tab_indicator_color">#018786</color>
+    <color name="bottom_sheet_top_line_bg_color">#D2D2D2</color>
+    <color name="spinner_popup_bg">#FFFFFF</color>
+</resources>

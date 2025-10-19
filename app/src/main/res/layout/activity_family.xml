@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="onClickListener"
+            type="android.view.View.OnClickListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_color"
+        tools:context=".MainActivity">
+
+        <include
+            android:id="@+id/toolbarLayout"
+            layout="@layout/toolbar_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbarLayout">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:minHeight="30dp"
+                    android:text="@string/booth_no"
+                    android:textColor="@color/theme_color" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:nestedScrollingEnabled="false"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/line_divider" />
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_weight="0.2"
+                    android:gravity="center"
+                    android:minHeight="30dp"
+                    android:text="@string/following_change_apply_to_all_family_member"
+                    android:textColor="@color/theme_color" />
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_weight="0.6">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_mobno"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/mobile_number"
+                        android:inputType="phone"
+                        android:maxLength="10"
+                        android:text=""
+                        android:textColorHint="@color/et_hint_color"
+                        android:textSize="15dp" />
+
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:background="@drawable/rc_border_10">
+
+                    <Spinner
+                        android:id="@+id/sp_cast"
+                        style="@style/CustomDropDownTilStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:focusable="false"
+                        android:inputType="none"
+                        android:minHeight="@dimen/dp_55"
+
+                        android:textColor="@color/primary_text_color"
+                        android:textColorHint="@color/et_hint_color"
+                        android:textSize="15dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginHorizontal="@dimen/dp_10"
+                    android:layout_marginVertical="@dimen/dp_10">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="1">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/imgNoColor"
+                            android:layout_width="@dimen/dp_30"
+                            android:layout_height="@dimen/dp_30"
+                            android:layout_marginStart="@dimen/dp_2"
+                            android:layout_marginTop="@dimen/dp_4"
+                            android:onClick="@{onClickListener}"
+                            android:src="@drawable/nocolor" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/imgGreen"
+                            android:layout_width="@dimen/dp_30"
+                            android:layout_height="@dimen/dp_30"
+                            android:layout_marginStart="@dimen/dp_10"
+                            android:layout_marginTop="@dimen/dp_4"
+                            android:onClick="@{onClickListener}"
+                            android:src="@drawable/green" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/imgYellow"
+                            android:layout_width="@dimen/dp_30"
+                            android:layout_height="@dimen/dp_30"
+                            android:layout_marginStart="@dimen/dp_10"
+                            android:layout_marginTop="@dimen/dp_4"
+                            android:onClick="@{onClickListener}"
+                            android:src="@drawable/yellow" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/imgOther"
+                            android:layout_width="@dimen/dp_30"
+                            android:layout_height="@dimen/dp_30"
+                            android:layout_marginStart="@dimen/dp_10"
+                            android:layout_marginTop="@dimen/dp_4"
+                            android:onClick="@{onClickListener}"
+                            android:src="@drawable/other" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/imgRed"
+                            android:layout_width="@dimen/dp_30"
+                            android:layout_height="@dimen/dp_30"
+                            android:layout_marginStart="@dimen/dp_10"
+                            android:layout_marginTop="@dimen/dp_4"
+                            android:onClick="@{onClickListener}"
+                            android:src="@drawable/red" />
+                    </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/selectedImg"
+                        android:layout_width="@dimen/dp_25"
+                        android:layout_height="@dimen/dp_25"
+                        android:layout_marginStart="@dimen/dp_15"
+                        android:layout_marginTop="@dimen/dp_4"
+                        android:background="#ff000000"
+                        android:padding="@dimen/dp_1" />
+                </LinearLayout>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_update"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/green_border"
+                        android:onClick="@{onClickListener}"
+                        android:text="@string/update"
+                        android:textColor="@color/white_in_both_theme"
+                        android:textSize="@dimen/sp_14" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_complete_family"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/theme_border"
+                        android:onClick="@{onClickListener}"
+                        android:text="@string/complete_family"
+                        android:textColor="@color/white_in_both_theme"
+                        android:textSize="@dimen/sp_14" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_whatsapp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/green_border"
+                        android:onClick="@{onClickListener}"
+                        android:text="@string/whatsapp"
+                        android:textColor="@color/white_in_both_theme"
+                        android:textSize="@dimen/sp_14" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_send_sms"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="7dp"
+                        android:layout_marginRight="7dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/theme_border"
+                        android:onClick="@{onClickListener}"
+                        android:text="@string/send_sms"
+                        android:textColor="@color/white_in_both_theme"
+                        android:textSize="@dimen/sp_14" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_print"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="7dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/theme_border"
+                        android:onClick="@{onClickListener}"
+                        android:text="@string/print"
+                        android:textColor="@color/white_in_both_theme" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_unknown_voter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:layout_marginBottom="50dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/green_border"
+                    android:onClick="@{onClickListener}"
+                    android:text="@string/unknown_voter"
+                    android:textColor="@color/white_in_both_theme"
+                    android:textSize="@dimen/sp_14" />
+
+
+            </LinearLayout>
+
+
+        </androidx.core.widget.NestedScrollView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

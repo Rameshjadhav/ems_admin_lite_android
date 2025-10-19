@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:cardCornerRadius="@dimen/dp_5"
+        app:cardElevation="@dimen/dp_5"
+        app:cardUseCompatPadding="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/rootLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_10">
+
+            <TextView
+                android:id="@+id/tv_booth_name"
+                style="@style/TextViewStyleMedium"
+                android:layout_width="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/lbl_total_voter"
+                style="@style/TextViewStyleRegular"
+                android:text="@string/total_voter"
+                android:textColor="@color/et_hint_color"
+                android:textSize="@dimen/sp_15"
+                android:layout_marginTop="@dimen/dp_5"
+                app:layout_constraintEnd_toStartOf="@+id/tv_total_voter"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_booth_name" />
+
+            <TextView
+                android:id="@+id/tv_total_voter"
+                style="@style/TextViewStyleRegular"
+                android:layout_width="0dp"
+                android:textSize="@dimen/sp_15"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginStart="@dimen/dp_5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@+id/lbl_total_voter"
+                app:layout_constraintTop_toBottomOf="@+id/tv_booth_name" />
+
+            <TextView
+                android:id="@+id/lbl_total_mobile_num_count"
+                style="@style/TextViewStyleRegular"
+                android:text="@string/total_mobile_num_count_colon"
+                android:textColor="@color/et_hint_color"
+                android:textSize="@dimen/sp_15"
+                android:layout_marginTop="@dimen/dp_5"
+                app:layout_constraintEnd_toStartOf="@+id/tv_total_mobile_num_count"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_total_voter" />
+
+            <TextView
+                android:id="@+id/tv_total_mobile_num_count"
+                style="@style/TextViewStyleRegular"
+                android:layout_width="0dp"
+                android:layout_marginStart="@dimen/dp_10"
+                android:textSize="@dimen/sp_15"
+                android:layout_marginTop="@dimen/dp_5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/lbl_total_mobile_num_count"
+                app:layout_constraintTop_toBottomOf="@+id/tv_total_voter" />
+
+            <TextView
+                android:id="@+id/lbl_total_caste_count"
+                style="@style/TextViewStyleRegular"
+                android:text="@string/total_caste_count_colon"
+                android:textColor="@color/et_hint_color"
+                android:textSize="@dimen/sp_15"
+                android:layout_marginTop="@dimen/dp_5"
+                app:layout_constraintEnd_toStartOf="@+id/tv_total_caste_count"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_total_mobile_num_count" />
+
+            <TextView
+                android:id="@+id/tv_total_caste_count"
+                style="@style/TextViewStyleRegular"
+                android:layout_width="0dp"
+                android:layout_marginStart="@dimen/dp_10"
+                android:textSize="@dimen/sp_15"
+                android:layout_marginTop="@dimen/dp_5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/lbl_total_caste_count"
+                app:layout_constraintTop_toBottomOf="@+id/tv_total_mobile_num_count" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

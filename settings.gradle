@@ -1,0 +1,19 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        google()
+        maven { url='https://jitpack.io'}
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url = uri("https://maven.aliyun.com/repository/jcenter") }
+    }
+}
+rootProject.name = "EMS Admin Lite"
+include ':app'

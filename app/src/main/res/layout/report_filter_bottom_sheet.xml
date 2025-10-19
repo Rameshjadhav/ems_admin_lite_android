@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="onClickListener"
+            type="android.view.View.OnClickListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/line_View"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_15"
+            app:cardBackgroundColor="@color/bottom_sheet_top_line_bg_color"
+            app:cardCornerRadius="@dimen/dp_25"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="false"
+            app:layout_constraintBottom_toTopOf="@+id/lbl_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/lbl_title"
+            style="@style/TextViewStyleBold"
+            android:layout_marginHorizontal="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_15"
+            android:gravity="center"
+            android:text="@string/filter"
+            android:textSize="@dimen/sp_25"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/line_View"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:ignore="RelativeOverlap" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_village"
+            style="@style/EditTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginHorizontal="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@drawable/edit_bg"
+            android:focusable="false"
+            android:hint="@string/select_village"
+            android:imeOptions="actionNext"
+            android:maxLines="1"
+            android:onClick="@{onClickListener}"
+            android:singleLine="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lbl_title"
+            tools:ignore="Autofill,LabelFor,TextFields" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_booth"
+            style="@style/EditTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginHorizontal="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@drawable/edit_bg"
+            android:focusable="false"
+            android:hint="@string/select_booth"
+            android:imeOptions="actionNext"
+            android:maxLines="1"
+            android:onClick="@{onClickListener}"
+            android:singleLine="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_village"
+            tools:ignore="Autofill,LabelFor,TextFields" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_reset"
+            style="@style/ButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_50"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:background="@drawable/theme_border"
+            android:onClick="@{onClickListener}"
+            android:text="@string/reset"
+            android:textColor="@color/theme_color"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_apply"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_booth" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_apply"
+            style="@style/ButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_50"
+            android:layout_marginHorizontal="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:background="@drawable/theme_btn_bg"
+            android:onClick="@{onClickListener}"
+            android:text="@string/apply"
+            android:textColor="@color/white_in_both_theme"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_reset"
+            app:layout_constraintTop_toBottomOf="@+id/et_booth" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

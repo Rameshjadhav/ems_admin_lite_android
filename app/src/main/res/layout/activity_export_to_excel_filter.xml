@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="onClickListener"
+            type="android.view.View.OnClickListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_color"
+        tools:context=".MainActivity">
+
+        <include
+            android:id="@+id/toolbarLayout"
+            layout="@layout/toolbar_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ScrollView
+            android:id="@+id/scroll_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/cr_bottom_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbarLayout">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_10"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toolbarLayout">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_ward"
+                    style="@style/EditTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:background="@drawable/edit_bg_gray"
+                    android:focusable="false"
+                    android:hint="@string/select_ward"
+                    android:imeOptions="actionNext"
+                    android:maxLines="1"
+                    android:onClick="@{onClickListener}"
+                    android:singleLine="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_booth"
+                    style="@style/EditTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:background="@drawable/edit_bg_gray"
+                    android:focusable="false"
+                    android:hint="@string/select_booth"
+                    android:imeOptions="actionNext"
+                    android:maxLines="1"
+                    android:onClick="@{onClickListener}"
+                    android:singleLine="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/et_ward"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_surname"
+                    style="@style/EditTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:background="@drawable/edit_bg_gray"
+                    android:focusable="false"
+                    android:hint="@string/select_surname"
+                    android:imeOptions="actionNext"
+                    android:maxLines="1"
+                    android:onClick="@{onClickListener}"
+                    android:singleLine="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/et_booth"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+
+                <LinearLayout
+                    android:id="@+id/ll_color"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/dp_10"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/et_surname">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="1">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/imgNoColor"
+                            android:layout_width="@dimen/dp_30"
+                            android:layout_height="@dimen/dp_30"
+                            android:layout_marginStart="@dimen/dp_2"
+                            android:layout_marginTop="@dimen/dp_4"
+                            android:onClick="@{onClickListener}"
+                            android:src="@drawable/nocolor" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/imgGreen"
+                            android:layout_width="@dimen/dp_30"
+                            android:layout_height="@dimen/dp_30"
+                            android:layout_marginStart="@dimen/dp_10"
+                            android:layout_marginTop="@dimen/dp_4"
+                            android:onClick="@{onClickListener}"
+                            android:src="@drawable/green" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/imgYellow"
+                            android:layout_width="@dimen/dp_30"
+                            android:layout_height="@dimen/dp_30"
+                            android:layout_marginStart="@dimen/dp_10"
+                            android:layout_marginTop="@dimen/dp_4"
+                            android:onClick="@{onClickListener}"
+                            android:src="@drawable/yellow" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/imgOther"
+                            android:layout_width="@dimen/dp_30"
+                            android:layout_height="@dimen/dp_30"
+                            android:layout_marginStart="@dimen/dp_10"
+                            android:layout_marginTop="@dimen/dp_4"
+                            android:onClick="@{onClickListener}"
+                            android:src="@drawable/other" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/imgRed"
+                            android:layout_width="@dimen/dp_30"
+                            android:layout_height="@dimen/dp_30"
+                            android:layout_marginStart="@dimen/dp_10"
+                            android:layout_marginTop="@dimen/dp_4"
+                            android:onClick="@{onClickListener}"
+                            android:src="@drawable/red" />
+                    </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/selectedImg"
+                        android:layout_width="@dimen/dp_25"
+                        android:layout_height="@dimen/dp_25"
+                        android:layout_marginStart="@dimen/dp_15"
+                        android:layout_marginTop="@dimen/dp_4"
+                        android:background="#ff000000"
+                        android:padding="@dimen/dp_1" />
+                </LinearLayout>
+
+                <Spinner
+                    android:id="@+id/sp_cast"
+                    style="@style/CustomDropDownTilStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="-5dp"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:textSize="@dimen/sp_15"
+                    app:layout_constraintEnd_toStartOf="@+id/sp_profession"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ll_color" />
+
+                <Spinner
+                    android:id="@+id/sp_profession"
+                    style="@style/CustomDropDownTilStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_marginHorizontal="-5dp"
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:textSize="@dimen/sp_15"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/sp_cast"
+                    app:layout_constraintTop_toBottomOf="@+id/ll_color" />
+
+                <Spinner
+                    android:id="@+id/sp_designation"
+                    style="@style/CustomDropDownTilStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="-5dp"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:textSize="@dimen/sp_15"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/sp_profession" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/ll_age"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/sp_designation">
+
+                    <TextView
+                        style="@style/TextViewStyleRegular"
+                        android:text="@string/age"
+                        android:textColor="@color/et_hint_color"
+                        android:textSize="@dimen/sp_15" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/et_from"
+                        style="@style/EditTextStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp_40"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_weight="1"
+                        android:background="@drawable/edit_bg_gray"
+                        android:hint="@string/from"
+                        android:imeOptions="actionNext"
+                        android:inputType="number"
+                        android:maxLength="3"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/lbl_select_booth"
+                        tools:ignore="Autofill,LabelFor,TextFields" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/et_to"
+                        style="@style/EditTextStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp_40"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_weight="1"
+                        android:background="@drawable/edit_bg_gray"
+                        android:hint="@string/to"
+                        android:imeOptions="actionDone"
+                        android:inputType="number"
+                        android:maxLength="3"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/lbl_select_booth"
+                        tools:ignore="Autofill,LabelFor,TextFields" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <TextView
+                    android:id="@+id/lbl_gender"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="@string/gender"
+                    android:textColor="@color/et_hint_color"
+                    android:textSize="@dimen/sp_15"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ll_age" />
+
+                <RadioGroup
+                    android:id="@+id/rg_gender"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_weight="1.3"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lbl_gender">
+
+                    <RadioButton
+                        android:id="@+id/rb_gender_both"
+                        style="@style/TextViewStyleRegular"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="@string/both" />
+
+                    <RadioButton
+                        android:id="@+id/rb_gender_male"
+                        style="@style/TextViewStyleRegular"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/m" />
+
+                    <RadioButton
+                        android:id="@+id/rb_gender_female"
+                        style="@style/TextViewStyleRegular"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/f" />
+                </RadioGroup>
+
+
+                <TextView
+                    android:id="@+id/lbl_committee"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="@string/booth_committee"
+                    android:textColor="@color/et_hint_color"
+                    android:textSize="@dimen/sp_15"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rg_gender" />
+
+                <RadioGroup
+                    android:id="@+id/rg_committee"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_weight="1.3"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lbl_committee">
+
+                    <RadioButton
+                        android:id="@+id/rb_commitee_both"
+                        style="@style/TextViewStyleRegular"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="@string/both" />
+
+                    <RadioButton
+                        android:id="@+id/rb_admin"
+                        style="@style/TextViewStyleRegular"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/admin" />
+
+                    <RadioButton
+                        android:id="@+id/rb_member"
+                        style="@style/TextViewStyleRegular"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/member" />
+                </RadioGroup>
+
+                <TextView
+                    android:id="@+id/lbl_mobile"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="@string/mobile_number"
+                    android:textColor="@color/et_hint_color"
+                    android:textSize="@dimen/sp_15"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rg_committee" />
+
+                <RadioGroup
+                    android:id="@+id/rg_mobile"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_40"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lbl_mobile">
+
+                    <RadioButton
+                        android:id="@+id/rb_mobile_none"
+                        style="@style/TextViewStyleRegular"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/none" />
+
+                    <RadioButton
+                        android:id="@+id/rb_mobile_yes"
+                        style="@style/TextViewStyleRegular"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/yes" />
+
+                    <RadioButton
+                        android:id="@+id/rb_mobile_no"
+                        style="@style/TextViewStyleRegular"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/no" />
+                </RadioGroup>
+
+                <TextView
+                    android:id="@+id/lbl_address"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="@string/address"
+                    android:textColor="@color/et_hint_color"
+                    android:textSize="@dimen/sp_15"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rg_mobile" />
+
+                <RadioButton
+                    android:id="@+id/rb_outstation"
+                    style="@style/TextViewStyleRegular"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_40"
+                    android:orientation="horizontal"
+                    android:text="@string/outstation"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lbl_address" />
+
+                <TextView
+                    android:id="@+id/lbl_sort_by"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="@string/sort_by"
+                    android:textColor="@color/et_hint_color"
+                    android:textSize="@dimen/sp_15"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rb_outstation" />
+
+                <RadioGroup
+                    android:id="@+id/rg_sort_by"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_weight="1.3"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lbl_sort_by">
+
+                    <RadioButton
+                        android:id="@+id/rb_alphabetical"
+                        style="@style/TextViewStyleRegular"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="@string/alphabetical" />
+
+                    <RadioButton
+                        android:id="@+id/rb_voter_id"
+                        style="@style/TextViewStyleRegular"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/voter_no" />
+                </RadioGroup>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/cr_bottom_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_15"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/scroll_view">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btn_search"
+                style="@style/TextViewStyleMedium"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/rc_theme_c10"
+                android:gravity="center"
+                android:minHeight="@dimen/dp_40"
+                android:onClick="@{onClickListener}"
+                android:text="@string/search"
+                android:textColor="@color/white_in_both_theme" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btn_reset"
+                style="@style/TextViewStyleMedium"
+                android:layout_width="0dp"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_weight="1"
+                android:background="@drawable/rc_border_10"
+                android:gravity="center"
+                android:minHeight="@dimen/dp_40"
+                android:onClick="@{onClickListener}"
+                android:text="@string/reset"
+                android:textColor="@color/red_text_color" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

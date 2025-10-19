@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="user"
+            type="com.ems.lite.admin.model.User" />
+
+        <variable
+            name="userClickListener"
+            type="com.ems.lite.admin.ui.adapters.UserListAdapter.UserClickListener" />
+    </data>
+
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/rootLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="1"
+        app:cardCornerRadius="@dimen/dp_5"
+        app:cardElevation="@dimen/dp_5"
+        app:cardUseCompatPadding="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="@{()->userClickListener.onItemClick(user)}"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/dp_15"
+            android:paddingVertical="@dimen/dp_10"
+            android:weightSum="1">
+
+
+            <TextView
+                android:id="@+id/tv_name"
+                style="@style/TextViewStyleMedium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text='@{user.name??""}'
+                android:textColor="@color/theme_color"
+                app:layout_constraintEnd_toStartOf="@+id/cv_status"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="@dimen/dp_60"
+                app:cardCornerRadius="@dimen/dp_5"
+                app:cardElevation="0dp"
+                app:contentPadding="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_name"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/statusText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:paddingHorizontal="@dimen/dp_10"
+                    android:paddingVertical="@dimen/dp_5"
+                    android:textColor="@color/theme_color"
+                    android:textSize="@dimen/sp_12"
+                    tools:text="@string/app_name" />
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/tv_mobile"
+                style="@style/TextViewStyleRegular"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_5"
+                android:text='@{user.mobileNo??""}'
+                android:visibility="@{user.mobileNo}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cv_status" />
+
+            <TextView
+                android:id="@+id/lbl_division"
+                style="@style/TextViewStyleRegular"
+                android:layout_marginTop="@dimen/dp_5"
+                android:text='@{@string/division+" :"}'
+                android:textColor="@color/et_hint_color"
+                android:textSize="@dimen/sp_14"
+                android:visibility="@{user.divName}"
+                app:layout_constraintEnd_toStartOf="@+id/tv_division"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_mobile" />
+
+            <TextView
+                android:id="@+id/tv_division"
+                style="@style/TextViewStyleRegular"
+                android:layout_width="0dp"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_5"
+                android:text='@{user.divName??""}'
+                android:textSize="@dimen/sp_14"
+                android:visibility="@{user.divName}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/lbl_division"
+                app:layout_constraintTop_toBottomOf="@+id/tv_mobile" />
+
+            <TextView
+                android:id="@+id/lbl_village"
+                style="@style/TextViewStyleRegular"
+                android:layout_marginTop="@dimen/dp_5"
+                android:text='@{@string/village+" :"}'
+                android:textColor="@color/et_hint_color"
+                android:textSize="@dimen/sp_14"
+                android:visibility="@{user.villageName}"
+                app:layout_constraintEnd_toStartOf="@+id/tv_village"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_division" />
+
+            <TextView
+                android:id="@+id/tv_village"
+                style="@style/TextViewStyleRegular"
+                android:layout_width="0dp"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_5"
+                android:text='@{user.villageName??""}'
+                android:textSize="@dimen/sp_14"
+                android:visibility="@{user.villageName}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/lbl_village"
+                app:layout_constraintTop_toBottomOf="@+id/tv_division" />
+
+            <TextView
+                android:id="@+id/lbl_booth"
+                style="@style/TextViewStyleRegular"
+                android:layout_marginTop="@dimen/dp_5"
+                android:text='@{@string/booth+" :"}'
+                android:textColor="@color/et_hint_color"
+                android:textSize="@dimen/sp_14"
+                android:visibility="@{user.boothName}"
+                app:layout_constraintEnd_toStartOf="@+id/tv_booth"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_village" />
+
+            <TextView
+                android:id="@+id/tv_booth"
+                style="@style/TextViewStyleRegular"
+                android:layout_width="0dp"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_5"
+                android:text='@{user.boothName??""}'
+                android:textSize="@dimen/sp_14"
+                android:visibility="@{user.boothName}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/lbl_booth"
+                app:layout_constraintTop_toBottomOf="@+id/tv_village" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

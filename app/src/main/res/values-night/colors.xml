@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="theme_text_color">#018786</color>
+    <color name="black">#FFFFFF</color>
+    <color name="white">#000000</color>
+    <color name="brown">#964B00</color>
+    <color name="background_color">#000000</color>
+    <color name="primary_text_color">#FFFFFF</color>
+    <color name="secondary_text_color">#D9D9D9</color>
+    <color name="et_hint_color">#999999</color>
+    <color name="et_text_color">#FFFFFF</color>
+    <color name="et_bg_color">#A3A3A3</color>
+    <color name="red_text_color">#FF0000</color>
+    <color name="divider_color">#A3A3A3</color>
+    <color name="red">#DA2626</color>
+    <color name="active_bg_color">#C5FFC4</color>
+    <color name="inactive_bg_color">#F7D1AB</color>
+    <color name="card_bg_color">#585858</color>
+    <color name="spinner_popup_bg">#585858</color>
+</resources>

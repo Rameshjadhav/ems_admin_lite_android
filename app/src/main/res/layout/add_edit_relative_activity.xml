@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="onClickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="talukaAdapter"
+            type="com.ems.lite.admin.ui.adapters.SpinnerAdapter" />
+
+        <variable
+            name="professionAdapter"
+            type="com.ems.lite.admin.ui.adapters.SpinnerAdapter" />
+
+        <variable
+            name="relative"
+            type="com.ems.lite.admin.model.Relative" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbarLayout"
+            layout="@layout/toolbar_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/btn_save"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbarLayout">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardElevation="1dp"
+                app:strokeWidth="2dp"
+                tools:ignore="ScrollViewSize">
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/dp_15"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/lbl_taluka"
+                        style="@style/TextViewStyleRegular"
+                        android:layout_width="0dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:text="@string/taluka"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/cr_taluka_spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp_50"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:background="@drawable/rc_gray_border_5"
+                        android:padding="@dimen/dp_2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/lbl_taluka">
+
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/taluka_spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:adapter="@{talukaAdapter}"
+                            android:background="@color/white"
+                            android:popupBackground="@color/spinner_popup_bg"
+                            android:dropDownVerticalOffset="@dimen/dp_10"
+                            android:overlapAnchor="false"
+                            android:spinnerMode="dropdown"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/iv_taluka_arrow"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/dp_12"
+                            app:layout_constraintBottom_toBottomOf="@+id/taluka_spinner"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/taluka_spinner"
+                            app:srcCompat="@drawable/down_arrow_black" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/input_village_name"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:hint="@string/village_name"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/cr_taluka_spinner">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_village_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textCapWords"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text='@{relative.villageName??""}'
+                            android:textSize="@dimen/sp_15" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/input_relative_name"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:hint="@string/relative_name"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/input_village_name">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_relative_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textCapWords"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text='@{relative.villageName??""}'
+                            android:textSize="@dimen/sp_15" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/input_contact_number"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:hint="@string/contact_number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/input_relative_name">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_contact_number"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text='@{relative.villageName??""}'
+                            android:textSize="@dimen/sp_15" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/input_relation_with_head"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:hint="@string/relation_with_head"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/input_contact_number">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_relation_with_head"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top|start"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text='@{relative.villageName??""}'
+                            android:textSize="@dimen/sp_15" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/lbl_profession"
+                        style="@style/TextViewStyleRegular"
+                        android:layout_width="0dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:text="@string/profession"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/input_relation_with_head" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/cr_profession_spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp_50"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:background="@drawable/rc_gray_border_5"
+                        android:padding="@dimen/dp_2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/lbl_profession">
+
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/profession_spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:adapter="@{professionAdapter}"
+                            android:popupBackground="@color/spinner_popup_bg"
+                            android:background="@color/white"
+                            android:dropDownVerticalOffset="@dimen/dp_10"
+                            android:overlapAnchor="false"
+                            android:spinnerMode="dropdown"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/iv_profession_arrow"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/dp_12"
+                            app:layout_constraintBottom_toBottomOf="@+id/profession_spinner"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/profession_spinner"
+                            app:srcCompat="@drawable/down_arrow_black" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </androidx.core.widget.NestedScrollView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_save"
+            style="@style/ButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/dp_20"
+            android:layout_weight="0.5"
+            android:background="@drawable/theme_border"
+            android:onClick="@{onClickListener}"
+            android:text="@string/save"
+            android:textAllCaps="false"
+            android:textColor="@color/white_in_both_theme"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/scroll_view" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

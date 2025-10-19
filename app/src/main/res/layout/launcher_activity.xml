@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.ems.lite.admin.utils.ImageSetter.LoadImageType" />
+
+        <import type="com.ems.lite.admin.R" />
+
+        <variable
+            name="image"
+            type="String" />
+    </data>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/background_color">
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/todo"
+            android:scaleType="fitXY"
+            app:load_type="@{LoadImageType.NONE}"
+            app:place_holder="@{R.drawable.ic_place_holder}"
+            app:url="@{image}" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp"
+            android:background="@drawable/theme_btn_bg"
+            android:gravity="center"
+            android:minHeight="45dp"
+            android:onClick="btnLogin"
+            android:text="@string/start"
+            android:textColor="@color/white_in_both_theme" />
+
+
+    </RelativeLayout>
+</layout>

@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="onClickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="date"
+            type="String" />
+
+        <variable
+            name="time"
+            type="String" />
+
+        <variable
+            name="footerMessage"
+            type="String" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+
+        <include
+            android:id="@+id/toolbarLayout"
+            layout="@layout/toolbar_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbarLayout">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/dp_20"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toolbarLayout">
+
+                <TextView
+                    android:id="@+id/btn_reload"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/theme_btn_bg"
+                    android:gravity="center"
+                    android:minHeight="45dp"
+                    android:onClick="@{onClickListener}"
+                    android:text="@string/refresh_voter_slip_image"
+                    android:textColor="@color/white_in_both_theme" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/set_default_printer"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:background="@drawable/rc_border_10">
+
+                    <Spinner
+                        android:id="@+id/spinner_printers"
+                        style="@style/CustomDropDownTilStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:focusable="false"
+                        android:inputType="none"
+                        android:minHeight="@dimen/dp_45"
+                        android:textColor="@color/primary_text_color"
+                        android:textColorHint="@color/et_hint_color"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="@string/message_type"
+                    android:textColor="@color/secondary_text_color"
+                    android:textSize="@dimen/sp_15" />
+
+                <RadioGroup
+                    android:id="@+id/rg_message_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rb_general"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="@string/general"
+                        android:textSize="@dimen/sp_14" />
+
+                    <RadioButton
+                        android:id="@+id/rb_voting"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/voting"
+                        android:textSize="@dimen/sp_14" />
+
+                </RadioGroup>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/image_message_type"
+                    android:textColor="@color/secondary_text_color"
+                    android:textSize="@dimen/sp_15" />
+
+                <RadioGroup
+                    android:id="@+id/rg_image_message_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rb_with_image"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="@string/with_image"
+                        android:textSize="@dimen/sp_14" />
+
+                    <RadioButton
+                        android:id="@+id/rb_without_image"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/without_image"
+                        android:textSize="@dimen/sp_14" />
+
+                </RadioGroup>
+
+                <ImageView
+                    android:id="@+id/iv_header_image"
+                    android:layout_width="@dimen/dp_150"
+                    android:layout_height="@dimen/dp_150"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/dp_15"
+                    android:onClick="@{onClickListener}"
+                    android:src="@drawable/ic_place_holder" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="@string/pls_select_image_to_print_on_header"
+                    android:textColor="@color/secondary_text_color"
+                    android:textSize="@dimen/sp_15" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_30"
+                    android:text="@string/voting_date"
+                    android:textColor="@color/secondary_text_color"
+                    android:textSize="@dimen/sp_15" />
+
+                <EditText
+                    android:id="@+id/et_voting_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_45"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:background="@drawable/theme_border"
+                    android:gravity="center_vertical"
+                    android:hint="@string/voting_date"
+                    android:paddingHorizontal="@dimen/dp_20"
+                    android:singleLine="true"
+                    android:text='@{date?? ""}'
+                    android:textColor="@color/primary_text_color"
+                    android:textColorHint="@color/secondary_text_color"
+                    android:textSize="@dimen/sp_16"
+                    tools:ignore="UsingOnClickInXml" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_15"
+                    android:text="@string/voting_time"
+                    android:textColor="@color/secondary_text_color"
+                    android:textSize="@dimen/sp_15" />
+
+                <EditText
+                    android:id="@+id/et_voting_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_45"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:background="@drawable/theme_border"
+                    android:gravity="center_vertical"
+                    android:hint="@string/voting_time"
+                    android:paddingHorizontal="@dimen/dp_20"
+                    android:singleLine="true"
+                    android:text='@{time?? ""}'
+                    android:textColor="@color/primary_text_color"
+                    android:textColorHint="@color/secondary_text_color"
+                    android:textSize="@dimen/sp_16"
+                    tools:ignore="UsingOnClickInXml" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_15"
+                    android:text="@string/footer_message"
+                    android:textColor="@color/secondary_text_color"
+                    android:textSize="@dimen/sp_15" />
+
+                <EditText
+                    android:id="@+id/et_footer_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_150"
+                    android:layout_gravity="top"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:background="@drawable/theme_border"
+                    android:gravity="top"
+                    android:hint="@string/footer_message"
+                    android:paddingHorizontal="@dimen/dp_20"
+                    android:paddingVertical="@dimen/dp_10"
+                    android:text='@{footerMessage?? ""}'
+                    android:textColor="@color/primary_text_color"
+                    android:textColorHint="@color/secondary_text_color"
+                    android:textSize="@dimen/sp_16"
+                    tools:ignore="UsingOnClickInXml" />
+
+
+                <TextView
+                    android:id="@+id/btn_save"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/dp_30"
+                    android:background="@drawable/theme_btn_bg"
+                    android:gravity="center"
+                    android:minHeight="45dp"
+                    android:onClick="@{onClickListener}"
+                    android:text="@string/save"
+                    android:textColor="@color/white_in_both_theme" />
+
+
+            </LinearLayout>
+        </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
