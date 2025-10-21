@@ -36,61 +36,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbarLayout">
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/etvoterno"
-                style="@style/EditTextStyle"
-                android:layout_height="@dimen/dp_40"
-                android:background="@drawable/edit_bg_gray"
-                android:hint="@string/full_name"
-                android:imeOptions="actionNext"
-                android:maxLines="1"
-                android:singleLine="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lbl_select_booth"
-                tools:ignore="Autofill,LabelFor,TextFields" />
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_10"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/et_voter_id"
-                    style="@style/EditTextStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dp_40"
-                    android:layout_weight="1"
-                    android:background="@drawable/edit_bg_gray"
-                    android:hint="@string/epic_no"
-                    android:imeOptions="actionNext"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/lbl_select_booth"
-                    tools:ignore="Autofill,LabelFor,TextFields" />
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/et_house_no"
-                    style="@style/EditTextStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dp_40"
-                    android:layout_marginStart="@dimen/dp_10"
-                    android:layout_weight="1"
-                    android:background="@drawable/edit_bg_gray"
-                    android:hint="@string/house_number"
-                    android:imeOptions="actionNext"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/lbl_select_booth"
-                    tools:ignore="Autofill,LabelFor,TextFields" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -235,63 +180,6 @@
                     android:text="@string/reset"
                     android:textColor="@color/red_text_color" />
             </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:weightSum="1">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="0.1"
-
-                    android:gravity="center"
-                    android:minHeight="30dp"
-                    android:text="@string/booth_no"
-                    android:textColor="@color/theme_color" />
-
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="0.2"
-
-                    android:gravity="center"
-                    android:minHeight="30dp"
-                    android:text="@string/voter_no"
-                    android:textColor="@color/theme_color" />
-
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="0.5"
-
-                    android:gravity="center"
-                    android:minHeight="30dp"
-                    android:text="@string/voter_name"
-                    android:textColor="@color/theme_color" />
-
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="0.2"
-
-                    android:gravity="center"
-                    android:minHeight="30dp"
-                    android:text="@string/age"
-                    android:textColor="@color/theme_color" />
-
-
-            </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

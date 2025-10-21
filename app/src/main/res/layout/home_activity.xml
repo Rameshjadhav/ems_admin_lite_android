@@ -16,6 +16,16 @@
         android:background="@color/background_color"
         tools:context=".MainActivity">
 
+        <ImageView
+            android:id="@+id/iv_home_top"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_150"
+            android:scaleType="fitXY"
+            android:src="@drawable/toolbar_bg_1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <include
             android:id="@+id/toolbarLayout"
             layout="@layout/toolbar_layout"

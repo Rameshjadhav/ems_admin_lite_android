@@ -150,7 +150,7 @@ open class BaseActivity : AppCompatActivity() {
         super.attachBaseContext(context)
     }
 
-    protected fun syncTables() {
+    fun syncTables() {
         progressDialog = ProgressDialog(this@BaseActivity)
         progressDialog.setTitle(resources.getString(R.string.app_name))
         progressDialog.setMessage("Please wait...")
@@ -336,7 +336,7 @@ open class BaseActivity : AppCompatActivity() {
             setDisplayShowTitleEnabled(false)
             if (this@BaseActivity !is HomeActivity)
                 setDisplayHomeAsUpEnabled(true)
-            setHomeAsUpIndicator(ContextCompat.getDrawable(this@BaseActivity, R.drawable.ic_back))
+            setHomeAsUpIndicator(ContextCompat.getDrawable(this@BaseActivity, R.drawable.back))
         }
     }
 

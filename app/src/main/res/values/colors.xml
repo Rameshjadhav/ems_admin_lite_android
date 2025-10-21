@@ -23,7 +23,7 @@
     <color name="white">#FFFFFF</color>
     <color name="white_in_both_theme">#FFFFFF</color>
     <color name="brown">#964B00</color>
-    <color name="background_color">#FFFFFF</color>
+    <color name="background_color">#ECECEC</color>
     <color name="active_bg_color">#C5FFC4</color>
     <color name="inactive_bg_color">#F7D1AB</color>
     <color name="primary_text_color">#17171A</color>

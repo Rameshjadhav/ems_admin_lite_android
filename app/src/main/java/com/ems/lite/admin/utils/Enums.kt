@@ -27,4 +27,8 @@ object Enums {
     enum class Status {
         SELECT, GREEN, RED, YELLOW, ORANGE, OTHER
     }
+
+    enum class HomeOptionType {
+        SEARCH_VOTER, REPORT, IMPORT_DATA, SYNC_DATA, REFRESH_MASTERS, SETTINGS, ACTIVATE_USERS, EXPORT_TO_EXCEL, UPDATE_BOOTH
+    }
 }

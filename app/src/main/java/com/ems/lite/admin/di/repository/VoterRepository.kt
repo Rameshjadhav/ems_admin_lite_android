@@ -543,4 +543,45 @@ class VoterRepository @Inject constructor(
             }
         }.flowOn(Dispatchers.IO)
     }
+
+    fun getUserVoterUpdatedMaster(
+        offset: Long, request: VoterMasterListRequest
+    ): LiveData<VoterListResponse?> {
+        val data = MutableLiveData<VoterListResponse?>()
+        networkService.api.getUserVoterUpdatedMaster(offset, request)
+            .enqueue(object : Callback<VoterListResponse> {
+                override fun onResponse(
+                    call: Call<VoterListResponse>,
+                    response: Response<VoterListResponse>
+                ) {
+                    //Successful Response from server
+                    //Update the Live Data object
+                    var scanQRResponse: VoterListResponse?
+                    if (response.isSuccessful) {
+                        scanQRResponse = response.body()
+                    } else {
+                        val error = CommonUtils.getErrorResponse(response.errorBody())
+                        scanQRResponse = VoterListResponse()
+                        scanQRResponse.error = error
+                    }
+                    if (scanQRResponse == null) {
+                        scanQRResponse = VoterListResponse()
+                    }
+                    scanQRResponse.statusCode = response.code()
+                    data.postValue(scanQRResponse)
+                }
+
+                override fun onFailure(call: Call<VoterListResponse>, t: Throwable) {
+
+                    //Updating the response even for failure as the loader gets stuck
+                    var scanQRResponse: VoterListResponse? = null
+                    if (CommonUtils.isTimeOutError(t)) {
+                        scanQRResponse = VoterListResponse()
+                        scanQRResponse!!.statusCode = ResponseStatus.STATUS_CODE_ERROR_TIMEOUT
+                    }
+                    data.postValue(scanQRResponse)
+                }
+            })
+        return data
+    }
 }

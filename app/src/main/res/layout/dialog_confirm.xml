@@ -63,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/dp_4"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@mipmap/ic_launcher_new"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

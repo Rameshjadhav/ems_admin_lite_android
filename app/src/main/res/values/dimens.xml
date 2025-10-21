@@ -29,4 +29,6 @@
     <dimen name="dp_100">100dp</dimen>
     <dimen name="minus_dp_10">-10dp</dimen>
     <dimen name="sp_20">20sp</dimen>
+    <dimen name="sp_24">24sp</dimen>
+    <dimen name="dp_400">400dp</dimen>
 </resources>

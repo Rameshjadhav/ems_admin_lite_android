@@ -15,8 +15,8 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/background_color">
+        android:background="@drawable/background"
+        android:orientation="vertical">
 
 
         <ImageView
@@ -28,19 +28,17 @@
             app:place_holder="@{R.drawable.ic_place_holder}"
             app:url="@{image}" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatButton
+            style="@style/ButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="10dp"
-            android:background="@drawable/theme_btn_bg"
+            android:layout_margin="@dimen/dp_20"
+            android:background="@drawable/rc_border_10"
             android:gravity="center"
-            android:minHeight="45dp"
             android:onClick="btnLogin"
             android:text="@string/start"
-            android:textColor="@color/white_in_both_theme" />
-
-
+            android:textColor="@color/black" />
     </RelativeLayout>
 </layout>

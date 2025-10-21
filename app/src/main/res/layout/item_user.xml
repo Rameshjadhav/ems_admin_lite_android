@@ -85,31 +85,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/cv_status" />
 
             <TextView
-                android:id="@+id/lbl_division"
-                style="@style/TextViewStyleRegular"
-                android:layout_marginTop="@dimen/dp_5"
-                android:text='@{@string/division+" :"}'
-                android:textColor="@color/et_hint_color"
-                android:textSize="@dimen/sp_14"
-                android:visibility="@{user.divName}"
-                app:layout_constraintEnd_toStartOf="@+id/tv_division"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_mobile" />
-
-            <TextView
-                android:id="@+id/tv_division"
-                style="@style/TextViewStyleRegular"
-                android:layout_width="0dp"
-                android:layout_marginStart="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_5"
-                android:text='@{user.divName??""}'
-                android:textSize="@dimen/sp_14"
-                android:visibility="@{user.divName}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/lbl_division"
-                app:layout_constraintTop_toBottomOf="@+id/tv_mobile" />
-
-            <TextView
                 android:id="@+id/lbl_village"
                 style="@style/TextViewStyleRegular"
                 android:layout_marginTop="@dimen/dp_5"
@@ -119,7 +94,7 @@
                 android:visibility="@{user.villageName}"
                 app:layout_constraintEnd_toStartOf="@+id/tv_village"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_division" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_mobile" />
 
             <TextView
                 android:id="@+id/tv_village"
@@ -132,7 +107,7 @@
                 android:visibility="@{user.villageName}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/lbl_village"
-                app:layout_constraintTop_toBottomOf="@+id/tv_division" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_mobile" />
 
             <TextView
                 android:id="@+id/lbl_booth"

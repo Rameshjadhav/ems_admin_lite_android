@@ -157,6 +157,21 @@
                 </LinearLayout>
             </androidx.appcompat.widget.LinearLayoutCompat>
 
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etSearch"
+                style="@style/EditTextStyle"
+                android:layout_marginVertical="@dimen/dp_10"
+                android:background="@drawable/edit_bg_gray"
+                android:hint="@string/search"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
+                android:visibility="gone"
+                android:singleLine="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lbl_select_booth"
+                tools:ignore="Autofill,LabelFor,TextFields" />
+
             <ViewFlipper
                 android:id="@+id/view_flipper"
                 android:layout_width="match_parent"

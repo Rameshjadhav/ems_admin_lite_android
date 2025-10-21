@@ -68,65 +68,6 @@
                 android:visibility="gone">
 
                 <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/et_assembly"
-                    style="@style/EditTextStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dp_40"
-                    android:layout_marginTop="@dimen/dp_10"
-                    android:background="@drawable/edit_bg_gray"
-                    android:focusable="false"
-                    android:hint="@string/select_assembly"
-                    android:imeOptions="actionNext"
-                    android:maxLines="1"
-                    android:onClick="@{onClickListener}"
-                    android:singleLine="true"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/tv_assembly_count"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="Autofill,LabelFor,TextFields" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_assembly_count"
-                    style="@style/TextViewStyleMedium"
-                    android:layout_marginHorizontal="@dimen/dp_8"
-                    android:text=""
-                    app:layout_constraintBottom_toBottomOf="@+id/et_assembly"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/et_assembly"
-                    app:layout_constraintTop_toTopOf="@+id/et_assembly" />
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/et_division"
-                    style="@style/EditTextStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dp_40"
-                    android:layout_marginTop="@dimen/dp_5"
-                    android:background="@drawable/edit_bg_gray"
-                    android:focusable="false"
-                    android:hint="@string/select_division"
-                    android:imeOptions="actionNext"
-                    android:maxLines="1"
-                    android:onClick="@{onClickListener}"
-                    android:singleLine="true"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/tv_division_count"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/et_assembly"
-                    tools:ignore="Autofill,LabelFor,TextFields" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_division_count"
-                    style="@style/TextViewStyleMedium"
-                    android:layout_marginHorizontal="@dimen/dp_8"
-                    android:text=""
-                    app:layout_constraintBottom_toBottomOf="@+id/et_division"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/et_division"
-                    app:layout_constraintTop_toTopOf="@+id/et_division" />
-
-
-                <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/et_village"
                     style="@style/EditTextStyle"
                     android:layout_width="0dp"
@@ -142,7 +83,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/tv_village_count"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/et_division"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="Autofill,LabelFor,TextFields" />
 
                 <androidx.appcompat.widget.AppCompatTextView

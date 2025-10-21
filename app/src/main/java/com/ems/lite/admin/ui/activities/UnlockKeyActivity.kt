@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.activity.viewModels
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.ems.lite.admin.R
 import com.ems.lite.admin.databinding.ActivityUnlockKeyBinding
@@ -15,7 +16,6 @@ import com.ems.lite.admin.network.Status
 import com.ems.lite.admin.utils.CommonUtils
 import com.ems.lite.admin.utils.Prefs
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
@@ -28,13 +28,9 @@ class UnlockKeyActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityUnlockKeyBinding.inflate(layoutInflater)
-        setUpToolNewBar(binding.toolbarLayout)
-        setToolBarTitle(getString(R.string.unlock_code))
-        val view = binding.root
-        setContentView(view)
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_unlock_key)
         initObservers()
-        generatecode()
+        generateCode()
 
     }
 
@@ -81,7 +77,7 @@ class UnlockKeyActivity : BaseActivity() {
         }
     }
 
-    private fun generatecode() {
+    private fun generateCode() {
         binding.etMob.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
@@ -101,7 +97,7 @@ class UnlockKeyActivity : BaseActivity() {
     private fun createcode() {
         val mob = binding.etMob.getText().toString()
         usercode = mob.toLong() + mob.toLong() + 777
-        binding.etYourcode.setText(usercode.toString())
+        binding.etYourCode.setText(usercode.toString())
         val tempvalue: Long = 1991
         unlockcode = usercode + tempvalue
     }
@@ -117,7 +113,7 @@ class UnlockKeyActivity : BaseActivity() {
             onBoardingViewModel.login(
                 LoginRequest(
                     binding.etMob.text.toString().trim(),
-                    binding.etUnlockcode.text.toString().trim()
+                    binding.etYourCode.text.toString().trim()
                 )
             )
         }

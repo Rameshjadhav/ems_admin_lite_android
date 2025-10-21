@@ -71,41 +71,28 @@ class AgeWiseVoterListActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun searchVoter() {
-        val voterno = binding.etvoterno.text.toString()
         if (loading) {
             binding.llLoadMore.visibility = View.VISIBLE
         }
         CoroutineScope(Dispatchers.Main).launch {
-            val split = voterno.split(" ")
-            val search1: String
-            var search2 = ""
-            var search3 = ""
-            if (split.size >= 3) {
-                search1 = split[0]
-                search2 = split[1]
-                search3 = split[2]
-            } else if (split.size >= 2) {
-                search1 = split[0]
-                search2 = split[1]
-            } else if (split.isNotEmpty()) {
-                search1 = split[0]
-            } else {
-                search1 = voterno
-            }
-
             var gender = ""
             if (binding.rbMale.isChecked) {
                 gender = Enums.Gender.M.toString()
             } else if (binding.rbFemale.isChecked) {
                 gender = Enums.Gender.F.toString()
             }
+            val boothNo = binding.etBoothNo.text.toString().trim().ifEmpty { "0" }
+            val count = commonViewModel.getDB().voterDao()
+                .searchVoterCountByAge(
+                    villageNo, boothNo.toLong(),
+                    gender, binding.etFrom.text.toString().trim(),
+                    binding.etTo.text.toString().trim()
+                )
+            setToolBarSubTitle(count.toString())
 
             val list = commonViewModel.getDB().voterDao()
                 .searchVoterByAge(
-                    search1, search2, search3,
-                    villageNo, binding.etBoothNo.text.toString().trim(),
-                    binding.etVoterId.text.toString().trim(),
-                    binding.etHouseNo.text.toString().trim(),
+                    villageNo, boothNo.toLong(),
                     gender, binding.etFrom.text.toString().trim(),
                     binding.etTo.text.toString().trim(),
                     offset * 30
@@ -160,9 +147,6 @@ class AgeWiseVoterListActivity : BaseActivity(), View.OnClickListener {
             }
 
             R.id.btn_reset -> {
-                binding.etvoterno.setText("")
-                binding.etVoterId.setText("")
-                binding.etHouseNo.setText("")
                 binding.etBoothNo.setText(if (boothNo != 0L) boothNo.toString() else "")
                 binding.rbBoth.isChecked = true
                 binding.etFrom.setText("")
@@ -184,16 +168,13 @@ class AgeWiseVoterListActivity : BaseActivity(), View.OnClickListener {
                 }
 
                 override fun onCallClick(mobileNo: String?) {
-                    callNumber = mobileNo?.replace("/","")
+                    callNumber = mobileNo?.replace("/", "")
                     makePhoneCall()
                 }
             }
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.scheduleLayoutAnimation()
-        binding.recyclerView.addItemDecoration(
-            com.ems.lite.admin.utils.SimpleDividerItemDecoration(this)
-        )
         binding.recyclerView.adapter = voterListAdapter
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             val linearLayoutManager = binding.recyclerView.layoutManager as LinearLayoutManager

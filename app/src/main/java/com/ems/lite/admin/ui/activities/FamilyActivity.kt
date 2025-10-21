@@ -82,7 +82,7 @@ class FamilyActivity : BaseActivity(), OnClickListener {
     private val commonViewModel: VoterViewModel by viewModels()
     private val voterList: ArrayList<Voter> = arrayListOf()
     private val castList: ArrayList<Cast> = arrayListOf()
-    val professionList: ArrayList<Profession> = arrayListOf()
+    private val professionList: ArrayList<Profession> = arrayListOf()
     private lateinit var voterListAdapter: FamilyMemberListAdapter
     private var booth: Booth? = null
     private var voter: Voter? = null

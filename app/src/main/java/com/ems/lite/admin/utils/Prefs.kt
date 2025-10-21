@@ -91,7 +91,7 @@ object Prefs {
         get() = prefs.getLong(LIMIT, 2000)
         set(value) = prefs.edit().putLong(LIMIT, value).apply()
     var lang: String
-        get() = prefs.getString(LANGUAGE, Enums.Language.en.toString())!!
+        get() = prefs.getString(LANGUAGE, Enums.Language.mr.toString())!!
         set(value) = prefs.edit().putString(LANGUAGE, value).apply()
     var votingDate: String?
         get() = prefs.getString(VOTING_DATE, "")
@@ -123,4 +123,8 @@ object Prefs {
     var isWithImageMsg: Boolean
         get() = prefs.getBoolean(IS_WITH_IMAGE_MSG, true)
         set(value) = prefs.edit().putBoolean(IS_WITH_IMAGE_MSG, value).apply()
+
+    fun logout(){
+        prefs.edit().clear().apply()
+    }
 }

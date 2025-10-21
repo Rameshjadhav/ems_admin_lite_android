@@ -22,6 +22,7 @@
     <string name="pls_select_booth">कृपया बूथ निवडा</string>
     <string name="user_updated_successfully">वापरकर्ता यशस्वीरित्या लागू झाला</string>
     <string name="changes_applied_successfully">बदल यशस्वीरित्या लागू झाला</string>
+    <string name="are_you_sure_want_to_logout">तुमची खात्री आहे की तुम्ही \nलॉगआउट करू इच्छिता?</string>
     <string name="search_voter">मतदार शोधा</string>
     <string name="please_wait">कृपया थांबा…</string>
     <string name="family">कुटुंब</string>

@@ -1,5 +1,6 @@
 package com.ems.lite.admin.ui.activities
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
@@ -9,6 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.WindowManager
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
@@ -23,6 +25,7 @@ import com.ems.lite.admin.model.request.UserRequest
 import com.ems.lite.admin.model.response.ResponseStatus
 import com.ems.lite.admin.model.table.Voter
 import com.ems.lite.admin.network.Status
+import com.ems.lite.admin.utils.AnimationsHandler
 import com.ems.lite.admin.utils.CommonUtils
 import com.ems.lite.admin.utils.CustomProgressDialog
 import com.ems.lite.admin.utils.Prefs
@@ -36,6 +39,18 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class LauncherActivity : BaseActivity() {
 
+    companion object {
+        fun startActivity(activity: Activity) {
+            Intent(activity, LauncherActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            }.run {
+                activity.startActivity(this)
+                AnimationsHandler.playActivityAnimation(
+                    activity, AnimationsHandler.Animations.LeftToRight
+                )
+            }
+        }
+    }
 
     private var list: List<Voter>? = null
     private lateinit var binding: LauncherActivityBinding
@@ -202,7 +217,7 @@ class LauncherActivity : BaseActivity() {
     fun btnLogin(view: View) {
         val user = Prefs.user
         if (user == null) {
-            startActivityForResult(Intent(this, UnlockKeyActivity::class.java), 1)
+            launcher.launch(Intent(this, UnlockKeyActivity::class.java))
         } else {
             takeAction(user, true)
         }
@@ -259,4 +274,7 @@ class LauncherActivity : BaseActivity() {
             HomeActivity.startActivity(this@LauncherActivity)
         }
     }
+
+    private val launcher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
 }

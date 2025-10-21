@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.ems.lite.admin.model.Influencer
 import com.ems.lite.admin.model.Survey
 import com.ems.lite.admin.model.table.CountBy
@@ -56,20 +57,17 @@ abstract class VoterDao {
 
     @Query(
         "SELECT * FROM (" +
-                "SELECT * FROM Voter WHERE (:voterCard =='' OR cardNo == :voterCard) AND (:houseNo =='' OR houseNo == :houseNo) AND (:gender =='' OR sex == :gender) AND ((:fromAge =='' AND :toAge =='') OR (:fromAge !='' AND :toAge !='' AND age BETWEEN :fromAge AND :toAge)) AND (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND (voterFNameEng LIKE :s1||'%' OR :s1='') and (voterMNameEng LIKE :s2||'%' OR :s2='') and (voterLNameEng LIKE :s3||'%' OR :s3='') " +
-                "UNION  SELECT * FROM Voter WHERE (:voterCard =='' OR cardNo == :voterCard) AND (:houseNo =='' OR houseNo == :houseNo) AND (:gender =='' OR sex == :gender) AND ((:fromAge =='' AND :toAge =='') OR (:fromAge !='' AND :toAge !='' AND age BETWEEN :fromAge AND :toAge))  AND (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND (voterLNameEng LIKE :s1||'%' OR :s1='') and (voterFNameEng LIKE :s2||'%' OR :s2='') and (voterMNameEng LIKE :s3||'%' OR :s3='') " +
-                "UNION  SELECT * FROM Voter WHERE (:voterCard =='' OR cardNo == :voterCard) AND (:houseNo =='' OR houseNo == :houseNo) AND (:gender =='' OR sex == :gender) AND ((:fromAge =='' AND :toAge =='') OR (:fromAge !='' AND :toAge !='' AND age BETWEEN :fromAge AND :toAge)) AND (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND (voterLNameEng LIKE :s1||'%' OR :s1='') and (voterFNameEng LIKE :s2||'%' OR :s2='')" +
-                "UNION  SELECT * FROM Voter WHERE (:voterCard =='' OR cardNo == :voterCard) AND (:houseNo =='' OR houseNo == :houseNo) AND (:gender =='' OR sex == :gender) AND ((:fromAge =='' AND :toAge =='') OR (:fromAge !='' AND :toAge !='' AND age BETWEEN :fromAge AND :toAge)) AND (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND (voterFNameEng LIKE :s1||'%' OR :s1='') and (voterLNameEng LIKE :s2||'%' OR :s2='')" +
-                "UNION  SELECT * FROM Voter WHERE (:voterCard =='' OR cardNo == :voterCard) AND (:houseNo =='' OR houseNo == :houseNo) AND (:gender =='' OR sex == :gender) AND ((:fromAge =='' AND :toAge =='') OR (:fromAge !='' AND :toAge !='' AND age BETWEEN :fromAge AND :toAge)) AND (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND (voterNo LIKE :s1||'%' OR :s1='')" +
-                "UNION  SELECT * FROM Voter WHERE (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND (address LIKE :s1||'%' OR :s1='')" +
-                "UNION  SELECT * FROM Voter WHERE (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND (cardNo LIKE :s1||'%' OR :s1='')" +
+                "SELECT * FROM Voter WHERE (:gender =='' OR sex == :gender) AND ((:fromAge =='' AND :toAge =='') OR (:fromAge !='' AND :toAge !='' AND age BETWEEN :fromAge AND :toAge)) AND (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) " +
+                "UNION  SELECT * FROM Voter WHERE (:gender =='' OR sex == :gender) AND ((:fromAge =='' AND :toAge =='') OR (:fromAge !='' AND :toAge !='' AND age BETWEEN :fromAge AND :toAge))  AND (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) " +
+                "UNION  SELECT * FROM Voter WHERE (:gender =='' OR sex == :gender) AND ((:fromAge =='' AND :toAge =='') OR (:fromAge !='' AND :toAge !='' AND age BETWEEN :fromAge AND :toAge)) AND (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) " +
+                "UNION  SELECT * FROM Voter WHERE (:gender =='' OR sex == :gender) AND ((:fromAge =='' AND :toAge =='') OR (:fromAge !='' AND :toAge !='' AND age BETWEEN :fromAge AND :toAge)) AND (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) " +
+                "UNION  SELECT * FROM Voter WHERE (:gender =='' OR sex == :gender) AND ((:fromAge =='' AND :toAge =='') OR (:fromAge !='' AND :toAge !='' AND age BETWEEN :fromAge AND :toAge)) AND (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) " +
+                "UNION  SELECT * FROM Voter WHERE (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo)" +
+                "UNION  SELECT * FROM Voter WHERE (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo)" +
                 ")Voter   LIMIT :offset,30"
     )
     abstract fun searchVoterByAge(
-        s1: String, s2: String, s3: String,
-        villageNo: Long, boothNo: String,
-        voterCard: String,
-        houseNo: String,
+        villageNo: Long, boothNo: Long,
         gender: String,
         fromAge: String,
         toAge: String,
@@ -78,10 +76,21 @@ abstract class VoterDao {
 
     @Query("SELECT * FROM (SELECT * FROM Voter WHERE (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND (voterNameEng LIKE '%'||:name||'%' OR voterName LIKE '%'||:name||'%' OR :name=''))Voter ORDER BY voterNo LIMIT :offset,30")
     abstract fun searchVoterByName(
-        name: String,
-        villageNo: Long, boothNo: Long,
-        offset: Int
+        name: String, villageNo: Long, boothNo: Long, offset: Int
     ): List<Voter>?
+
+    @Query(
+        "SELECT COUNT(*) FROM (" +
+                "SELECT * FROM Voter WHERE (:gender ='' OR sex = :gender) AND ((:fromAge ='' AND :toAge ='') OR (:fromAge !='' AND :toAge !='' AND age BETWEEN :fromAge AND :toAge)) AND  (:villageNo =0 OR villageNo = :villageNo) AND (:boothNo =0 OR boothNo = :boothNo) " +
+                "UNION SELECT * FROM Voter WHERE (:gender ='' OR sex = :gender) AND ((:fromAge ='' AND :toAge ='') OR (:fromAge !='' AND :toAge !='' AND age BETWEEN :fromAge AND :toAge))  AND  (:villageNo =0 OR villageNo = :villageNo) AND (:boothNo =0 OR boothNo = :boothNo) " +
+                "UNION SELECT * FROM Voter WHERE (:gender ='' OR sex = :gender) AND ((:fromAge ='' AND :toAge ='') OR (:fromAge !='' AND :toAge !='' AND age BETWEEN :fromAge AND :toAge)) AND  (:villageNo =0 OR villageNo = :villageNo) AND (:boothNo =0 OR boothNo = :boothNo) " +
+                "UNION SELECT * FROM Voter WHERE (:gender ='' OR sex = :gender) AND ((:fromAge ='' AND :toAge ='') OR (:fromAge !='' AND :toAge !='' AND age BETWEEN :fromAge AND :toAge)) AND  (:villageNo =0 OR villageNo = :villageNo) AND (:boothNo =0 OR boothNo = :boothNo) " +
+                "UNION SELECT * FROM Voter WHERE (:gender ='' OR sex = :gender) AND ((:fromAge ='' AND :toAge ='') OR (:fromAge !='' AND :toAge !='' AND age BETWEEN :fromAge AND :toAge)) AND  (:villageNo =0 OR villageNo = :villageNo) AND (:boothNo =0 OR boothNo = :boothNo) " +
+                ") Voter"
+    )
+    abstract fun searchVoterCountByAge(
+        villageNo: Long, boothNo: Long, gender: String, fromAge: String, toAge: String
+    ): Long
 
     @Query("SELECT * FROM (SELECT * FROM Voter WHERE (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND (voterLName =:lastName) AND (voterNo == :voterNo OR :voterNo=''))Voter ORDER BY voterNo LIMIT :offset,20")
     abstract fun searchVoterByVoterNo(
@@ -147,17 +156,11 @@ abstract class VoterDao {
         name: String?
     ): List<Voter>?
 
-    @Query("SELECT voterLNameEng as nameEng ,voterLName as name ,COUNT(*) as totalCount FROM Voter where  (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND (:surname = '' OR voterLNameEng LIKE :surname OR voterLName LIKE :surname) GROUP BY voterLName,voterLNameEng ORDER BY totalCount DESC LIMIT :offset,30")
-    abstract fun getCountBYSurname(
-        villageNo: Long, boothNo: Long,
-        surname: String, offset: Int
-    ): List<CountBy>?
-
-    @Query("SELECT voterLNameEng as nameEng ,voterLName as name ,COUNT(*) as totalCount FROM Voter where  (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND (:surname = '' OR voterLNameEng LIKE :surname OR voterLName LIKE :surname) GROUP BY voterLName,voterLNameEng ORDER BY totalCount DESC")
-    abstract fun getCountBYSurname(
-        villageNo: Long, boothNo: Long,
-        surname: String
-    ): List<CountBy>?
+    @Query("SELECT * FROM Voter WHERE (:villageNo =0 OR villageNo = :villageNo) AND (:boothNo =0 OR boothNo = :boothNo) AND (:searchingName='' OR LOWER(voterNameEng) LIKE LOWER(:searchingName)||'%' OR LOWER(voterName) LIKE LOWER(:searchingName)||'%') AND  voterStatusName=:name LIMIT :offset,30")
+    abstract fun getVoterByStatus(
+        villageNo: Long?, boothNo: Long?,
+        searchingName: String?, name: String?, offset: Int
+    ): List<Voter>?
 
     @Query("SELECT COUNT(*) FROM Voter WHERE completedFamily=:completed GROUP BY houseNo")
     abstract fun getFamilyCount(completed: Int): Long
@@ -214,23 +217,75 @@ abstract class VoterDao {
         name: String, offset: Int
     ): List<Voter>?
 
-    @Query("SELECT * FROM Voter WHERE   (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND (voterLNameEng=:name OR voterLName=:name) AND castNo==0")
-    abstract fun getVoterBySurnameWithoutCaste(
+
+    @Transaction
+    @Query(
+        "SELECT voterLNameEng as nameEng ,voterLName as name ,COUNT(*) as totalCount FROM Voter " +
+                "WHERE (:villageNo =0 OR villageNo = :villageNo) " +
+                "AND (:boothNo =0 OR boothNo = :boothNo) " +
+                "AND (:surname = '' OR LOWER(voterLNameEng) LIKE LOWER(:surname) OR LOWER(voterLName) LIKE LOWER(:surname)) " +
+                "GROUP BY LOWER(voterLNameEng) " +
+                "ORDER BY totalCount DESC"
+    )
+    abstract fun getCountListBySurname(
         villageNo: Long, boothNo: Long,
-        name: String
+        surname: String
+    ): List<CountBy>?
+
+    @Transaction
+    @Query(
+        "SELECT voterLNameEng as nameEng ,voterLName as name ,COUNT(*) as totalCount FROM Voter " +
+                "WHERE (:villageNo =0 OR villageNo = :villageNo) " +
+                "AND (:boothNo =0 OR boothNo = :boothNo) " +
+                "AND (:surname = '' OR LOWER(voterLNameEng) LIKE LOWER(:surname) OR LOWER(voterLName) LIKE LOWER(:surname)) " +
+                "GROUP BY LOWER(voterLNameEng) " +
+                "ORDER BY voterLNameEng, totalCount DESC LIMIT :offset,30"
+    )
+    abstract fun getCountListBySurname(
+        villageNo: Long, boothNo: Long,
+        surname: String, offset: Int
+    ): List<CountBy>?
+
+    @Query(
+        "SELECT COUNT(*) FROM Voter WHERE  " +
+                "(:villageNo =0 OR villageNo = :villageNo) " +
+                "AND (:boothNo =0 OR boothNo = :boothNo) " +
+                "AND (LOWER(voterLNameEng)=LOWER(:name)) " +
+                "AND ((:isCast = 1  AND castNo != 0) OR (:isCast = 0 AND castNo = 0))"
+    )
+    abstract fun getVoterCountBySurname(
+        villageNo: Long, boothNo: Long,
+        name: String, isCast: Boolean
+    ): Long
+
+    @Transaction
+    @Query(
+        "SELECT * FROM Voter WHERE  " +
+                "(:villageNo =0 OR villageNo = :villageNo) " +
+                "AND (:boothNo =0 OR boothNo = :boothNo) " +
+                "AND (LOWER(voterLNameEng)=LOWER(:lastName)) " +
+                "AND (:searchName='' OR (LOWER(voterNameEng) LIKE LOWER(:searchName)||'%') OR (LOWER(voterName) LIKE LOWER(:searchName)||'%')) " +
+                "AND ((:isCast=1 AND castNo!=0) OR (:isCast=0 AND castNo=0)) " +
+                "LIMIT :offset,30"
+    )
+    abstract fun getVoterListBySurname(
+        villageNo: Long, boothNo: Long,
+        searchName: String, lastName: String, isCast: Boolean, offset: Int
     ): List<Voter>?
 
-    @Query("SELECT COUNT(*) FROM Voter WHERE   (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND (voterLNameEng=:name OR voterLName=:name) AND castNo!=0")
-    abstract fun getVoterBySurnameWithCasteCount(
+    @Transaction
+    @Query(
+        "SELECT * FROM Voter WHERE  " +
+                "(:villageNo =0 OR villageNo = :villageNo) " +
+                "AND (:boothNo =0 OR boothNo = :boothNo) " +
+                "AND (LOWER(voterLNameEng)=LOWER(:lastName)) " +
+                "AND ((:isCast=1 AND castNo!=0) OR (:isCast=0 AND castNo=0)) "
+    )
+    abstract fun getVoterListBySurname(
         villageNo: Long, boothNo: Long,
-        name: String
-    ): Long
+        lastName: String, isCast: Boolean
+    ): List<Voter>?
 
-    @Query("SELECT COUNT(*) FROM Voter WHERE   (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND (voterLNameEng=:name OR voterLName=:name) AND castNo==0")
-    abstract fun getVoterBySurnameWithoutCasteCount(
-        villageNo: Long, boothNo: Long,
-        name: String
-    ): Long
 
     @Query("SELECT address as nameEng, address as name ,COUNT(*) as totalCount FROM Voter where  (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND (:address = '' OR address LIKE '%'||:address||'%') GROUP BY address ORDER BY totalCount DESC LIMIT :offset,30")
     abstract fun getCountBYAddress(
@@ -353,17 +408,17 @@ abstract class VoterDao {
         villageNo: Long, boothNo: Long
     ): List<Voter>?
 
-    @Query("SELECT * FROM Voter WHERE  (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND mobileNo  IS NULL  OR mobileNo =='' ORDER BY voterNo LIMIT :offset,30")
+    @Query("SELECT * FROM Voter WHERE  (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND (mobileNo  IS NULL  OR mobileNo =='') ORDER BY voterNo LIMIT :offset,30")
     abstract fun getAllMobileEmpty(
         villageNo: Long, boothNo: Long, offset: Int
     ): List<Voter>?
 
-    @Query("SELECT * FROM Voter WHERE  (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND mobileNo  IS NULL  OR mobileNo =='' ORDER BY voterNo")
+    @Query("SELECT * FROM Voter WHERE  (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND (mobileNo  IS NULL  OR mobileNo =='') ORDER BY voterNo")
     abstract fun getAllMobileEmpty(
         villageNo: Long, boothNo: Long
     ): List<Voter>?
 
-    @Query("SELECT COUNT(*) FROM Voter WHERE  (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND mobileNo  IS NOT NULL  AND mobileNo !=''")
+    @Query("SELECT COUNT(*) FROM Voter WHERE  (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND (mobileNo  IS NOT NULL  AND mobileNo !='')")
     abstract fun getAllMobileCount(
         villageNo: Long, boothNo: Long
     ): Long
@@ -463,7 +518,7 @@ abstract class VoterDao {
     @Query("SELECT * FROM Voter WHERE   (houseNo == NULL OR houseNo == :houseNo) ORDER BY age DESC")
     abstract fun getFamilyList(houseNo: String?): List<Voter>?
 
-    @Query("UPDATE  Voter  SET  castNo =:cast, updated = 1 where (voterLNameEng == :surname OR voterLName == :surname) AND  villageNo=:villageNo  AND  (:boothNo ==0 OR boothNo == :boothNo)")
+    @Query("UPDATE  Voter  SET  castNo =:cast, updated = 1 where (LOWER(voterLNameEng) = LOWER(:surname) OR LOWER(voterLName) = LOWER(:surname)) AND  villageNo=:villageNo  AND  (:boothNo ==0 OR boothNo == :boothNo)")
     abstract fun updateCastBySurnameWard(
         surname: String,
         villageNo: Long?,
@@ -475,6 +530,11 @@ abstract class VoterDao {
     abstract fun getDeadVoterList(
         villageNo: Long, boothNo: Long, offset: Int
     ): List<Voter>?
+
+    @Query("SELECT COUNT(*) FROM Voter a JOIN ( SELECT voterName FROM Voter WHERE (:villageNo = 0 OR villageNo = :villageNo) AND (:boothNo = 0 OR boothNo = :boothNo) GROUP BY voterName HAVING COUNT(*) > 1 ) b ON a.voterName = b.voterName WHERE (:villageNo = 0 OR villageNo = :villageNo) AND (:boothNo = 0 OR boothNo = :boothNo)")
+    abstract fun getCountByDuplication(
+        villageNo: Long, boothNo: Long
+    ): Long
 
     @Query("SELECT * FROM Voter a JOIN ( SELECT voterName FROM Voter WHERE (:villageNo = 0 OR villageNo = :villageNo) AND (:boothNo = 0 OR boothNo = :boothNo) GROUP BY voterName HAVING COUNT(*) > 1 ) b ON a.voterName = b.voterName WHERE (:villageNo = 0 OR villageNo = :villageNo) AND (:boothNo = 0 OR boothNo = :boothNo) ORDER BY a.voterName LIMIT :offset,30")
 //    @Query("SELECT * FROM Voter a JOIN (SELECT * , COUNT(*) FROM Voter  where  (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) GROUP BY voterName HAVING COUNT(voterName) > 1) b ON  a.voterName = b.voterName ORDER BY  voterName LIMIT :offset,30")

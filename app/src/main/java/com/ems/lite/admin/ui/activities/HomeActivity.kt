@@ -39,6 +39,7 @@ class HomeActivity : BaseActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.home_activity)
         setUpToolNewBar(binding.toolbarLayout)
         setToolBarTitle(getString(R.string.app_name))
+        binding.toolbarLayout.toolbarRoot.setBackgroundResource(android.R.color.transparent)
         initClickListener()
         setTabIcons()
         init()

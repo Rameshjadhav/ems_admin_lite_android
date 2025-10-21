@@ -257,7 +257,13 @@ constructor(
                     }
                 }
             }
+
         }
     }
 
+    fun getUserVoterUpdatedMaster(
+        offset: Long, request: VoterMasterListRequest
+    ): LiveData<VoterListResponse?> {
+        return voterRepository.getUserVoterUpdatedMaster(offset, request)
+    }
 }

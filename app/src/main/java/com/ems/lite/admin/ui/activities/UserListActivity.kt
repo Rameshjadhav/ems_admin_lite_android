@@ -180,6 +180,7 @@ class UserListActivity : BaseActivity() {
 
     val userDetailLauncher = registerForActivityResult(StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
+            offset = 0
             getUserList()
         }
     }

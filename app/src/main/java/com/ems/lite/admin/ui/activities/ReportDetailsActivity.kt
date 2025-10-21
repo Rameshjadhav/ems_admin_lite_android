@@ -6,6 +6,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -19,6 +21,7 @@ import com.ems.lite.admin.R
 import com.ems.lite.admin.databinding.ActivityReportDetailsBinding
 import com.ems.lite.admin.di.viewmodel.VoterViewModel
 import com.ems.lite.admin.model.table.Cast
+import com.ems.lite.admin.model.table.CountBy
 import com.ems.lite.admin.model.table.Profession
 import com.ems.lite.admin.model.table.Voter
 import com.ems.lite.admin.ui.adapters.VoterListAdapter
@@ -38,7 +41,7 @@ class ReportDetailsActivity : BaseActivity() {
         fun startActivityForResult(
             activity: Activity, reportType: String?,
             villageNo: Long?, boothNo: Long?,
-            boothName: String?, name: String?,
+            boothName: String?, countBy: CountBy?,
             launcher: ActivityResultLauncher<Intent>
         ) {
             Intent(activity, ReportDetailsActivity::class.java).apply {
@@ -46,7 +49,7 @@ class ReportDetailsActivity : BaseActivity() {
                 putExtra(IntentConstants.VILLAGE_NO, villageNo)
                 putExtra(IntentConstants.BOOTH_NO, boothNo)
                 putExtra(IntentConstants.BOOTH_NAME, boothName)
-                putExtra(IntentConstants.TYPE, name)
+                putExtra(IntentConstants.TYPE, countBy)
             }.run {
                 launcher.launch(this)
             }
@@ -64,7 +67,7 @@ class ReportDetailsActivity : BaseActivity() {
     private var reportType: String? = null
     private var villageNo: Long = 0
     private var boothNo: Long = 0
-    private var name: String? = null
+    private var countBy: CountBy? = null
     private var boothName: String? = null
     private var offset = 0
     private var loading = false
@@ -85,7 +88,7 @@ class ReportDetailsActivity : BaseActivity() {
         boothNo = intent.getLongExtra(IntentConstants.BOOTH_NO, 0)
         boothName = intent.getStringExtra(IntentConstants.BOOTH_NAME)
         reportType = intent.getStringExtra(IntentConstants.VALUE)
-        name = intent.getStringExtra(IntentConstants.TYPE)
+        countBy = intent.getParcelableExtra(IntentConstants.TYPE)
         binding.llUpdate.visibility = View.GONE
         binding.llCount.visibility = View.GONE
         when (reportType) {
@@ -103,6 +106,7 @@ class ReportDetailsActivity : BaseActivity() {
                 setToolBarTitle(getString(R.string.list_by_surname))
                 binding.llUpdate.visibility = View.VISIBLE
                 binding.llCount.visibility = View.VISIBLE
+                binding.etSearch.visibility = View.VISIBLE
                 binding.rb1.text = getString(R.string.cast_applied)
                 binding.rb2.text = getString(R.string.cast_not_applied)
                 loadVoterListBySurname()
@@ -120,6 +124,7 @@ class ReportDetailsActivity : BaseActivity() {
 
             Enums.ReportType.STATUS.toString() -> {
                 setToolBarTitle(getString(R.string.list_by_status))
+                binding.etSearch.visibility = View.VISIBLE
                 loadVoterListByStatus()
             }
 
@@ -176,7 +181,8 @@ class ReportDetailsActivity : BaseActivity() {
             binding.llLoadMore.visibility = View.VISIBLE
         }
         CoroutineScope(Dispatchers.Main).launch {
-            profession = commonViewModel.getDB().ProfessionDao().getProfessionId(name!!)
+            profession =
+                commonViewModel.getDB().ProfessionDao().getProfessionId(countBy?.getDisplayName()!!)
             professionId = profession?.professionNo.toString()
             val vList = commonViewModel.getDB().voterDao()
                 .getVoterByProfession(
@@ -191,6 +197,9 @@ class ReportDetailsActivity : BaseActivity() {
             binding.llLoadMore.visibility = View.VISIBLE
         }
         CoroutineScope(Dispatchers.Main).launch {
+            val count = commonViewModel.getDB().voterDao()
+                .getCountByDuplication(villageNo, boothNo)
+            setToolBarSubTitle((count / 2).toString())
             val vList =
                 commonViewModel.getDB().voterDao()
                     .getByDuplication(villageNo, boothNo, offset * 30)
@@ -258,7 +267,7 @@ class ReportDetailsActivity : BaseActivity() {
             val vList =
                 commonViewModel.getDB().voterDao()
                     .getVoterByStation(
-                        villageNo, boothNo, name!!, offset * 30
+                        villageNo, boothNo, countBy?.getDisplayName()!!, offset * 30
                     )
             fillResultAndNotify(vList)
         }
@@ -269,7 +278,7 @@ class ReportDetailsActivity : BaseActivity() {
             binding.llLoadMore.visibility = View.VISIBLE
         }
         CoroutineScope(Dispatchers.Main).launch {
-            cast = commonViewModel.getDB().CastDao().getCastId(name!!)
+            cast = commonViewModel.getDB().CastDao().getCastId(countBy?.getDisplayName()!!)
             castId = cast?.castNo.toString()
             val vList =
                 commonViewModel.getDB().voterDao()
@@ -322,10 +331,13 @@ class ReportDetailsActivity : BaseActivity() {
         if (offset != 0 && loading) {
             binding.llLoadMore.visibility = View.VISIBLE
         }
+        val searchingName = binding.etSearch.text.toString().trim()
         CoroutineScope(Dispatchers.Main).launch {
             val vList =
                 commonViewModel.getDB().voterDao()
-                    .getVoterByStatus(villageNo, boothNo, name, offset * 30)
+                    .getVoterByStatus(
+                        villageNo, boothNo, searchingName, countBy?.getDisplayName()!!, offset * 30
+                    )
             fillResultAndNotify(vList)
         }
     }
@@ -338,7 +350,7 @@ class ReportDetailsActivity : BaseActivity() {
             val vList =
                 commonViewModel.getDB().voterDao()
                     .getVoterByAddress(
-                        villageNo, boothNo, name!!, offset * 30
+                        villageNo, boothNo, countBy?.getDisplayName()!!, offset * 30
                     )
             fillResultAndNotify(vList)
         }
@@ -351,31 +363,19 @@ class ReportDetailsActivity : BaseActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             if (offset == 0) {
                 val count =
-                    if (binding.rb1.isChecked) {
-                        commonViewModel.getDB().voterDao()
-                            .getVoterBySurnameWithCasteCount(
-                                villageNo, boothNo, name!!
-                            )
-                    } else {
-                        commonViewModel.getDB().voterDao()
-                            .getVoterBySurnameWithoutCasteCount(
-                                villageNo, boothNo, name!!
-                            )
-                    }
+                    commonViewModel.getDB().voterDao()
+                        .getVoterCountBySurname(
+                            villageNo, boothNo, countBy?.nameEng!!, binding.rb1.isChecked
+                        )
                 binding.tvReportCount.text = count.toString()
             }
             val vList =
-                if (binding.rb1.isChecked) {
-                    commonViewModel.getDB().voterDao()
-                        .getVoterBySurnameWithCaste(
-                            villageNo, boothNo, name!!, offset * 30
-                        )
-                } else {
-                    commonViewModel.getDB().voterDao()
-                        .getVoterBySurnameWithoutCaste(
-                            villageNo, boothNo, name!!, offset * 30
-                        )
-                }
+                commonViewModel.getDB().voterDao()
+                    .getVoterListBySurname(
+                        villageNo, boothNo,
+                        binding.etSearch.text.toString().trim(),
+                        countBy?.nameEng!!, binding.rb1.isChecked, offset * 30
+                    )
             fillResultAndNotify(vList)
         }
     }
@@ -441,6 +441,16 @@ class ReportDetailsActivity : BaseActivity() {
                 }
             }
         }
+        binding.etSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                offset = 0
+                search()
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
         binding.onClickListener = View.OnClickListener {
             when (it.id) {
                 R.id.btn_update -> {
@@ -451,7 +461,7 @@ class ReportDetailsActivity : BaseActivity() {
                             val count =
                                 commonViewModel.getDB().voterDao()
                                     .updateCastBySurnameWard(
-                                        name!!,
+                                        countBy?.nameEng!!,
                                         villageNo,
                                         boothNo,
                                         cast.castNo
@@ -463,6 +473,7 @@ class ReportDetailsActivity : BaseActivity() {
                                         getString(R.string.changes_applied_successfully)
                                     )
                                 }
+                                offset = 0
                                 loadVoterListBySurname()
                                 CustomProgressDialog.dismissProgressDialog()
                             }, 1000)
@@ -485,7 +496,7 @@ class ReportDetailsActivity : BaseActivity() {
                 }
 
                 override fun onCallClick(mobileNo: String?) {
-                    callNumber = mobileNo?.replace("/", "")
+                    callNumber = mobileNo
                     makePhoneCall()
                 }
             }
@@ -608,17 +619,10 @@ class ReportDetailsActivity : BaseActivity() {
 
                     Enums.ReportType.SURNAME.toString() -> {
                         fileName = "Surname_report"
-                        if (binding.rb1.isChecked) {
-                            commonViewModel.getDB().voterDao()
-                                .getVoterBySurnameWithCaste(
-                                    villageNo, boothNo, name!!
-                                )
-                        } else {
-                            commonViewModel.getDB().voterDao()
-                                .getVoterBySurnameWithoutCaste(
-                                    villageNo, boothNo, name!!
-                                )
-                        }
+                        commonViewModel.getDB().voterDao()
+                            .getVoterListBySurname(
+                                villageNo, boothNo, countBy?.nameEng!!, binding.rb1.isChecked
+                            )
                     }
 
                     Enums.ReportType.VOTER_NO.toString() -> {
@@ -631,14 +635,14 @@ class ReportDetailsActivity : BaseActivity() {
                         fileName = "Address_report"
                         commonViewModel.getDB().voterDao()
                             .getVoterByAddress(
-                                villageNo, boothNo, name!!
+                                villageNo, boothNo, countBy?.getDisplayName()!!
                             )
                     }
 
                     Enums.ReportType.STATUS.toString() -> {
                         fileName = "Voter_Status_report"
                         commonViewModel.getDB().voterDao()
-                            .getVoterByStatus(villageNo, boothNo, name)
+                            .getVoterByStatus(villageNo, boothNo, countBy?.getDisplayName()!!)
                     }
 
                     Enums.ReportType.CAST.toString() -> {
@@ -667,7 +671,7 @@ class ReportDetailsActivity : BaseActivity() {
                         fileName = "OutStation_report"
                         commonViewModel.getDB().voterDao()
                             .getVoterByStation(
-                                villageNo, boothNo, name!!
+                                villageNo, boothNo, countBy?.getDisplayName()!!
                             )
                     }
 

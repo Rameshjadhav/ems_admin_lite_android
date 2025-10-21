@@ -128,6 +128,13 @@ class NetworkService @JvmOverloads constructor(
         @Headers("$HEADER_BEAR: true")
         @POST(Url.API + "insertData.php?action=getFamilyHeadList")
         suspend fun getRelativeCountList(@Body request: com.ems.lite.admin.model.request.RelativeCountListRequest?): Response<RelativeCountListResponse?>
+
+        @Headers("$HEADER_BEAR: false")
+        @POST(Url.API + "insertData.php?action=getUserVoterUpdatedMaster")
+        fun getUserVoterUpdatedMaster(
+            @Query("offset") offset: Long, @Body request: VoterMasterListRequest
+        ): Call<VoterListResponse>
+
     }
 
     companion object {

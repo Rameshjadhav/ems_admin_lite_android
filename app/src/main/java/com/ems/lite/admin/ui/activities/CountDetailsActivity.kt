@@ -225,7 +225,7 @@ class CountDetailsActivity : BaseActivity() {
             ) "${binding.etSearch.text.toString().trim()}%" else ""
             val cList =
                 commonViewModel.getDB().voterDao()
-                    .getCountBYSurname(
+                    .getCountListBySurname(
                         villageNo, boothNo, searchString, offset * 30
                     )
             fillResultAndNotify(cList)
@@ -380,7 +380,7 @@ class CountDetailsActivity : BaseActivity() {
                             ReportDetailsActivity.startActivityForResult(
                                 this@CountDetailsActivity,
                                 reportType, villageNo, boothNo, boothName,
-                                count.getDisplayName(), updateLauncher
+                                count, updateLauncher
                             )
                         }
                     }
@@ -436,7 +436,7 @@ class CountDetailsActivity : BaseActivity() {
                     Enums.ReportType.SURNAME.toString() -> {
                         fileName = "Surname_wise_report"
                         commonViewModel.getDB().voterDao()
-                            .getCountBYSurname(
+                            .getCountListBySurname(
                                 villageNo, boothNo, searchString
                             )
 
