@@ -37,6 +37,7 @@ import com.ems.lite.admin.databinding.ToolbarLayoutBinding
 import com.ems.lite.admin.di.viewmodel.BoothViewModel
 import com.ems.lite.admin.di.viewmodel.VillageViewModel
 import com.ems.lite.admin.di.viewmodel.VoterViewModel
+import com.ems.lite.admin.model.Setting
 import com.ems.lite.admin.model.request.DivisionListRequest
 import com.ems.lite.admin.model.request.VillageListRequest
 import com.ems.lite.admin.model.response.ResponseStatus
@@ -53,6 +54,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.apache.poi.hssf.usermodel.HSSFCellStyle
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.hssf.util.HSSFColor
@@ -76,6 +78,8 @@ open class BaseActivity : AppCompatActivity() {
         var selectedPrinter: BluetoothConnection? = null
         var shareImage: Bitmap? = null
         var printImage: Bitmap? = null
+        val settingList: ArrayList<Setting> = arrayListOf()
+        var selectedVillageSetting: Setting? = null
 
         val PERMISSIONS = arrayOf(
             Manifest.permission.CAMERA,
@@ -350,7 +354,7 @@ open class BaseActivity : AppCompatActivity() {
 
     protected fun setToolBarSubTitle(subTitle: String?) {
         tvToolbarSubTitle.text = if (!subTitle.isNullOrEmpty()) subTitle else ""
-        tvToolbarSubTitle.visibility= if (!subTitle.isNullOrEmpty()) View.VISIBLE else View.GONE
+        tvToolbarSubTitle.visibility = if (!subTitle.isNullOrEmpty()) View.VISIBLE else View.GONE
     }
 
     protected fun initNoInternet(
@@ -394,9 +398,52 @@ open class BaseActivity : AppCompatActivity() {
         return packageName
     }
 
+    fun downloadImageToBitmap(urlString: String, onResult: (Bitmap?) -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val bitmap = try {
+                val url = URL(urlString)
+                val connection = url.openConnection() as HttpURLConnection
+                connection.doInput = true
+                connection.connect()
 
-    protected class DownloadTask :
-        AsyncTask<URL?, Void?, Bitmap?>() {
+                connection.inputStream.use { input ->
+                    BufferedInputStream(input).use { bis ->
+                        BitmapFactory.decodeStream(bis)
+                    }
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                null
+            }
+
+            // Switch back to main thread
+            withContext(Dispatchers.Main) {
+                onResult(bitmap)
+            }
+        }
+    }
+
+    fun downloadBitmap(urlString: String, onResult: (Bitmap?) -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val bitmap = try {
+                val url = URL(urlString)
+                val connection = url.openConnection() as HttpURLConnection
+                connection.connect()
+                connection.inputStream.use { input ->
+                    BitmapFactory.decodeStream(BufferedInputStream(input))
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                null
+            }
+
+            withContext(Dispatchers.Main) {
+                onResult(bitmap)
+            }
+        }
+    }
+
+    protected class DownloadTask : AsyncTask<URL?, Void?, Bitmap?>() {
         override fun onPreExecute() {
         }
 
@@ -431,7 +478,7 @@ open class BaseActivity : AppCompatActivity() {
                 shareImage = result
                 if (printImage == null) {
                     val url1 =
-                        if (!Prefs.printImageUrl.isNullOrEmpty()) Prefs.printImageUrl
+                        if (!Prefs.setting?.printImage.isNullOrEmpty()) Prefs.setting?.printImage
                         else "http://vishwainfotech.co.in/api/Kunaljadhav/images/111.jpg"
                     DownloadHeaderImageTask().execute(stringToURL(url1))
                 }

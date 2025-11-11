@@ -1,5 +1,6 @@
 package com.ems.lite.admin.model
 
+import android.graphics.Bitmap
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
@@ -9,33 +10,32 @@ class Setting() : Parcelable {
     @SerializedName("_id")
     var id: Int = 0
 
-    @SerializedName("settingimage")
-    var settingImage: String? = null
-
-    @SerializedName("votingdate")
+    @SerializedName("voting_date")
     var votingDate: String? = null
 
-    @SerializedName("votingtime")
+    @SerializedName("voting_time")
     var votingTime: String? = null
 
-    @SerializedName("massage")
-    var massage: String? = null
+    @SerializedName("message")
+    var message: String? = null
 
-    @SerializedName("shareimage")
+    @SerializedName("share_image")
     var shareImage: String? = null
 
-    @SerializedName("printimage")
+    @SerializedName("print_image")
     var printImage: String? = null
 
     @SerializedName("mainbanner")
     var mainBanner: String? = null
 
+    var shareImageBitmap: Bitmap? = null
+    var printImageBitmap: Bitmap? = null
+
     constructor(parcel: Parcel) : this() {
         id = parcel.readInt()
-        settingImage = parcel.readString()
         votingDate = parcel.readString()
         votingTime = parcel.readString()
-        massage = parcel.readString()
+        message = parcel.readString()
         shareImage = parcel.readString()
         printImage = parcel.readString()
         mainBanner = parcel.readString()
@@ -43,10 +43,9 @@ class Setting() : Parcelable {
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
-        parcel.writeString(settingImage)
         parcel.writeString(votingDate)
         parcel.writeString(votingTime)
-        parcel.writeString(massage)
+        parcel.writeString(message)
         parcel.writeString(shareImage)
         parcel.writeString(printImage)
         parcel.writeString(mainBanner)

@@ -9,6 +9,7 @@ import com.ems.lite.admin.report.model.api.request.ReportCountRequest
 import com.ems.lite.admin.report.model.api.response.ReportCountResponse
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Response
@@ -134,6 +135,23 @@ class NetworkService @JvmOverloads constructor(
         fun getUserVoterUpdatedMaster(
             @Query("offset") offset: Long, @Body request: VoterMasterListRequest
         ): Call<VoterListResponse>
+
+        @Headers("$HEADER_BEAR: true")
+        @GET(Url.API + "insertData.php?action=getSetting")
+        suspend fun getSetting(@Query("village_no") villageNo: Long): Response<SettingResponse>
+
+        @Multipart
+        @Headers("$HEADER_BEAR: false")
+        @POST(Url.API + "insertData.php?action=UploadImage")
+        suspend fun uploadPhoto(
+            @Query("village_no") orderNo: Long,
+            @Query("image_type") imageType: String?,
+            @Part image: MultipartBody.Part
+        ): Response<CommonResponse?>
+
+        @Headers("$HEADER_BEAR: false")
+        @POST(Url.API + "insertData.php?action=updateSetting")
+        suspend fun updateSetting(@Body request: UpdateSettingRequest): Response<CommonResponse>
 
     }
 

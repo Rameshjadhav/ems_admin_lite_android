@@ -308,4 +308,12 @@
     <string name="karykarta">Karykarta</string>
     <string name="welcome_back">Hi, Welcome back!</string>
     <string name="refresh_masters">Refresh Masters</string>
+    <string name="select_village_ward">Select Village/ Ward</string>
+    <string name="printer_header_image">Printer Header Image</string>
+    <string name="voter_slip_image">Voter slip image (WhatsApp)</string>
+    <string name="upload">Upload</string>
+    <string name="pls_upload_print_image">Please upload print image</string>
+    <string name="pls_upload_share_image">Please upload share image</string>
+    <string name="pls_select_share_image">Please select share image</string>
+    <string name="pls_select_print_image">Please select print image</string>
 </resources>

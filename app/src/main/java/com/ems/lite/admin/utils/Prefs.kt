@@ -18,20 +18,16 @@ object Prefs {
     private const val IS_STATUS_SYNC = "is_status_sync"
     private const val PREFS_FILENAME = "Volunteer"
     private const val IS_LOGIN = "IS_LOGIN"
-    private const val SHARE_URL = "SHARE_URL"
     private const val TOTAL_COUNT = "total_count"
     private const val LIMIT = "limit"
     private const val LANGUAGE = "language"
-    private const val VOTING_DATE = "VOTING_DATE"
-    private const val VOTING_TIME = "voting_time"
     private const val HEADER_IMAGE = "header_image"
-    private const val FOOTER_MESSAGE = "footer_message"
     private const val SETTING = "setting"
     private const val PASSWORD = "password"
     private const val IS_GENERAL_MSG = "is_general_msg"
     private const val IS_WITH_IMAGE_MSG = "is_with_image_msg"
     private const val PRINTER_NAME = "printer_name"
-    private const val PRINT_URL = "PRINT_URL"
+    private const val MAIN_BANNER_URL = "MAIN_BANNER_URL"
 
     private val prefs: SharedPreferences =
         MyApplication.instance!!.applicationContext!!.getSharedPreferences(PREFS_FILENAME, 0)
@@ -77,12 +73,9 @@ object Prefs {
         get() = prefs.getBoolean(IS_LOGIN, false)
         set(value) = prefs.edit().putBoolean(IS_LOGIN, value).apply()
 
-    var shareImageUrl: String?
-        get() = prefs.getString(SHARE_URL, "")
-        set(value) = prefs.edit().putString(SHARE_URL, value).apply()
-    var printImageUrl: String?
-        get() = prefs.getString(PRINT_URL, "")
-        set(value) = prefs.edit().putString(PRINT_URL, value).apply()
+    var mainBannerImageUrl: String?
+        get() = prefs.getString(MAIN_BANNER_URL, "")
+        set(value) = prefs.edit().putString(MAIN_BANNER_URL, value).apply()
 
     var totalCount: Long
         get() = prefs.getLong(TOTAL_COUNT, 0)
@@ -93,27 +86,16 @@ object Prefs {
     var lang: String
         get() = prefs.getString(LANGUAGE, Enums.Language.mr.toString())!!
         set(value) = prefs.edit().putString(LANGUAGE, value).apply()
-    var votingDate: String?
-        get() = prefs.getString(VOTING_DATE, "")
-        set(value) = prefs.edit().putString(VOTING_DATE, value).apply()
-    var votingTime: String?
-        get() = prefs.getString(VOTING_TIME, "")
-        set(value) = prefs.edit().putString(VOTING_TIME, value).apply()
-
     var headerImage: String?
         get() = prefs.getString(HEADER_IMAGE, "")
         set(value) = prefs.edit().putString(HEADER_IMAGE, value).apply()
 
-    var footerMessage: String?
-        get() = prefs.getString(FOOTER_MESSAGE, "")
-        set(value) = prefs.edit().putString(FOOTER_MESSAGE, value).apply()
     var printerName: String?
         get() = prefs.getString(PRINTER_NAME, "")
         set(value) = prefs.edit().putString(PRINTER_NAME, value).apply()
     var setting: Setting?
         get() = gson.fromJson(
-            prefs.getString(SETTING, null),
-            Setting::class.java
+            prefs.getString(SETTING, null), Setting::class.java
         )
         set(value) = prefs.edit().putString(SETTING, gson.toJson(value))
             .apply()
@@ -124,7 +106,7 @@ object Prefs {
         get() = prefs.getBoolean(IS_WITH_IMAGE_MSG, true)
         set(value) = prefs.edit().putBoolean(IS_WITH_IMAGE_MSG, value).apply()
 
-    fun logout(){
+    fun logout() {
         prefs.edit().clear().apply()
     }
 }

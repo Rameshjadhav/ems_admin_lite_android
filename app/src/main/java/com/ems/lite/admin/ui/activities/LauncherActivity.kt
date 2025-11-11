@@ -32,7 +32,6 @@ import com.ems.lite.admin.utils.Prefs
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
@@ -80,7 +79,7 @@ class LauncherActivity : BaseActivity() {
                 getAppSettings()
             } else {
                 binding.image = setting.mainBanner
-                downloadShareImage()
+//                downloadShareImage()
             }
         }
     }
@@ -130,14 +129,9 @@ class LauncherActivity : BaseActivity() {
             voterViewModel.getAppSetting().observe(this) { response ->
                 CustomProgressDialog.dismissProgressDialog()
                 if (response != null && response.statusCode == ResponseStatus.STATUS_CODE_SUCCESS) {
-                    Prefs.setting = response.info
+                    Prefs.mainBannerImageUrl = response.info?.mainBanner
                     binding.image = response.info?.mainBanner
-                    Prefs.shareImageUrl = response.info?.shareImage
-                    Prefs.printImageUrl = response.info?.printImage
-                    Prefs.votingDate = response.info?.votingDate
-                    Prefs.votingTime = response.info?.votingTime
-                    Prefs.footerMessage = response.info?.massage
-                    downloadShareImage()
+//                    downloadShareImage()
                 } else if (response?.error != null) {
                     CommonUtils.showToast(this, response.error!!.message)
                 }
@@ -148,7 +142,7 @@ class LauncherActivity : BaseActivity() {
     }
 
     private fun downloadShareImage() {
-        val url1 = if (!Prefs.shareImageUrl.isNullOrEmpty()) Prefs.shareImageUrl
+        val url1 = if (!Prefs.setting?.shareImage.isNullOrEmpty()) Prefs.setting?.shareImage
         else "http://vishwainfotech.co.in/api/Kunaljadhav/images/111.jpg"
         DownloadTask().execute(stringToURL(url1))
     }

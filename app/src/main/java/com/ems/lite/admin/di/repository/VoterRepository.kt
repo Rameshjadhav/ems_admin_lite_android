@@ -18,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -180,7 +181,7 @@ class VoterRepository @Inject constructor(
         return data
     }
 
-    fun saveVoter( request: SaveVoterRequest): LiveData<VoterListResponse?> {
+    fun saveVoter(request: SaveVoterRequest): LiveData<VoterListResponse?> {
         val data = MutableLiveData<VoterListResponse?>()
         networkService.api.saveVoter(request)
             .enqueue(object : Callback<VoterListResponse> {
@@ -392,6 +393,7 @@ class VoterRepository @Inject constructor(
             }
         }.flowOn(Dispatchers.IO)
     }
+
     fun updateUser(request: UpdateUserRequest): LiveData<CommonResponse?> {
         val data = MutableLiveData<CommonResponse?>()
         networkService.api.updateUser(request)
@@ -470,6 +472,7 @@ class VoterRepository @Inject constructor(
             })
         return data
     }
+
     suspend fun getVoterList(request: VoterListRequest): Flow<ApiResponseState<VoterListResponse>> {
         return flow {
             val response = networkService.api.getVoterList(request)
@@ -529,6 +532,7 @@ class VoterRepository @Inject constructor(
             }
         }.flowOn(Dispatchers.IO)
     }
+
     suspend fun getRelativeCountList(request: com.ems.lite.admin.model.request.RelativeCountListRequest): Flow<ApiResponseState<RelativeCountListResponse>> {
         return flow {
             val response = networkService.api.getRelativeCountList(request)
@@ -584,4 +588,56 @@ class VoterRepository @Inject constructor(
             })
         return data
     }
+
+    suspend fun getSetting(villageNo: Long): Flow<ApiResponseState<SettingResponse>> {
+        return flow {
+            val response = networkService.api.getSetting(villageNo)
+            if (response.isSuccessful) {
+                emit(ApiResponseState.success(response.body(), response.code()))
+            } else {
+                emit(
+                    ApiResponseState.error(
+                        CommonUtils.getErrorResponse(response.errorBody()).message, response.code()
+                    )
+                )
+            }
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun uploadPhoto(
+        villageNo: Long, photoType: String?, image: MultipartBody.Part
+    ): Flow<ApiResponseState<CommonResponse>> {
+        return flow {
+            val response = networkService.api.uploadPhoto(
+                villageNo, photoType, image
+            )
+            if (response.isSuccessful) {
+                emit(ApiResponseState.success(response.body(), response.code()))
+            } else {
+                emit(
+                    ApiResponseState.error(
+                        CommonUtils.getErrorResponse(response.errorBody()).message, response.code()
+                    )
+                )
+            }
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun updateSetting(
+        request: UpdateSettingRequest
+    ): Flow<ApiResponseState<CommonResponse>> {
+        return flow {
+            val response = networkService.api.updateSetting(request)
+            if (response.isSuccessful) {
+                emit(ApiResponseState.success(response.body(), response.code()))
+            } else {
+                emit(
+                    ApiResponseState.error(
+                        CommonUtils.getErrorResponse(response.errorBody()).message, response.code()
+                    )
+                )
+            }
+        }.flowOn(Dispatchers.IO)
+    }
+
 }

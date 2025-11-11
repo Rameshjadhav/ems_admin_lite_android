@@ -13,6 +13,7 @@ import com.ems.lite.admin.model.Taluka
 import com.ems.lite.admin.model.table.Cast
 import com.ems.lite.admin.model.table.Designation
 import com.ems.lite.admin.model.table.Profession
+import com.ems.lite.admin.model.table.Village
 
 class SpinnerAdapter(
     context: Context?, resourceId: Int, val list: List<Any>?,
@@ -48,6 +49,9 @@ class SpinnerAdapter(
             }
             is Cast -> {
                 holder.txtTitle!!.text = (list[position] as Cast).toString()
+            }
+            is Village -> {
+                holder.txtTitle!!.text = (list[position] as Village).toString()
             }
             is Taluka -> {
                 holder.txtTitle!!.text = (list[position] as Taluka).talukaName

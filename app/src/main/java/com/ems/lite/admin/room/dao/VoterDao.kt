@@ -239,7 +239,7 @@ abstract class VoterDao {
                 "AND (:boothNo =0 OR boothNo = :boothNo) " +
                 "AND (:surname = '' OR LOWER(voterLNameEng) LIKE LOWER(:surname) OR LOWER(voterLName) LIKE LOWER(:surname)) " +
                 "GROUP BY LOWER(voterLNameEng) " +
-                "ORDER BY voterLNameEng, totalCount DESC LIMIT :offset,30"
+                "ORDER BY totalCount DESC LIMIT :offset,30"
     )
     abstract fun getCountListBySurname(
         villageNo: Long, boothNo: Long,

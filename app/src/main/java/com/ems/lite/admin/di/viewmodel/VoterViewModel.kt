@@ -21,8 +21,8 @@ import com.ems.lite.admin.utils.CommonUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,6 +46,12 @@ constructor(
         MutableStateFlow(ApiResponseState(Status.LOADING, CommonResponse()))
     val relativeCountListState =
         MutableStateFlow(ApiResponseState(Status.LOADING, RelativeCountListResponse()))
+    val getSettingState =
+        MutableStateFlow(ApiResponseState(Status.LOADING, SettingResponse()))
+    val updateSettingState =
+        MutableStateFlow(ApiResponseState(Status.LOADING, CommonResponse()))
+    val uploadPhotoState =
+        MutableStateFlow(ApiResponseState(Status.LOADING, CommonResponse()))
 
     fun getDB(): ElectionDatabase {
         return voterRepository.getDB()
@@ -265,5 +271,80 @@ constructor(
         offset: Long, request: VoterMasterListRequest
     ): LiveData<VoterListResponse?> {
         return voterRepository.getUserVoterUpdatedMaster(offset, request)
+    }
+
+    fun getSetting(villageNo: Long) {
+        when {
+            (!CommonUtils.isNetworkAvailable(resourcesProvider.context)) -> {
+                getSettingState.value = ApiResponseState.error(
+                    resourcesProvider.getString(R.string.no_internet_connection),
+                    100
+                )
+            }
+
+            else -> {
+                getSettingState.value = ApiResponseState.loading()
+                viewModelScope.launch {
+                    voterRepository.getSetting(villageNo).catch {
+                        getSettingState.value = ApiResponseState.error(it.message, 100)
+                    }.collect {
+                        getSettingState.value =
+                            if (it.data != null) ApiResponseState.success(it.data, it.code)
+                            else ApiResponseState.error(it.message, it.code)
+                    }
+                }
+            }
+        }
+    }
+    fun uploadPhoto(
+        villageNo: Long, photoType: String?, image: MultipartBody.Part
+    ) {
+        when {
+            (!CommonUtils.isNetworkAvailable(resourcesProvider.context)) -> {
+                uploadPhotoState.value = ApiResponseState.error(
+                    resourcesProvider.getString(R.string.no_internet_connection),
+                    100
+                )
+            }
+
+            else -> {
+                uploadPhotoState.value = ApiResponseState.loading()
+                viewModelScope.launch {
+                    voterRepository.uploadPhoto(
+                        villageNo, photoType, image
+                    ).catch {
+                        uploadPhotoState.value = ApiResponseState.error(it.message, 100)
+                    }.collect {
+                        uploadPhotoState.value =
+                            if (it.data != null) ApiResponseState.success(it.data, it.code)
+                            else ApiResponseState.error(it.message, it.code)
+                    }
+                }
+            }
+        }
+    }
+
+    fun updateSetting(request: UpdateSettingRequest) {
+        when {
+            (!CommonUtils.isNetworkAvailable(resourcesProvider.context)) -> {
+                updateSettingState.value = ApiResponseState.error(
+                    resourcesProvider.getString(R.string.no_internet_connection),
+                    100
+                )
+            }
+
+            else -> {
+                updateSettingState.value = ApiResponseState.loading()
+                viewModelScope.launch {
+                    voterRepository.updateSetting(request).catch {
+                        updateSettingState.value = ApiResponseState.error(it.message, 100)
+                    }.collect {
+                        updateSettingState.value =
+                            if (it.data != null) ApiResponseState.success(it.data, it.code)
+                            else ApiResponseState.error(it.message, it.code)
+                    }
+                }
+            }
+        }
     }
 }

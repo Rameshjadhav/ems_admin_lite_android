@@ -31,4 +31,8 @@ object Enums {
     enum class HomeOptionType {
         SEARCH_VOTER, REPORT, IMPORT_DATA, SYNC_DATA, REFRESH_MASTERS, SETTINGS, ACTIVATE_USERS, EXPORT_TO_EXCEL, UPDATE_BOOTH
     }
+
+    enum class ImageType {
+        PRINT_IMAGE, SHARE_IMAGE
+    }
 }

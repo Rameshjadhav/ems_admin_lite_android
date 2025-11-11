@@ -87,8 +87,8 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
     private val religionList: ArrayList<Religion> = arrayListOf()
     private var voter: Voter? = null
     private var booth: Booth? = null
-    private val date = Prefs.votingDate
-    private val time = Prefs.votingTime
+    private val date = Prefs.setting?.votingDate
+    private val time = Prefs.setting?.votingTime
     private var initialized = false
     private var selectedStatus: String? = null
     private val selectedDateTime = Calendar.getInstance()
@@ -830,13 +830,23 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
         if (Prefs.isGeneralMsg || !Prefs.isWithImageMsg) {
             shareGeneralWhatsappMessage()
         } else {
-            if (shareImage != null) {
-                shareImageWhatsApp(shareImage!!)
-            } else {
-                val url1 = if (!Prefs.shareImageUrl.isNullOrEmpty()) Prefs.shareImageUrl
-                else "http://vishwainfotech.co.in/api/Kunaljadhav/images/111.jpg"
-                DownloadTask().execute(stringToURL(url1))
+            val url1 = if (!Prefs.setting?.shareImage.isNullOrEmpty()) Prefs.setting?.shareImage!!
+            else "http://vishwainfotech.co.in/api/Kunaljadhav/images/111.jpg"
+            showHideProgress(true)
+            downloadBitmap(url1) { bitmap ->
+                showHideProgress(false)
+                if (bitmap != null) {
+                    shareImage = bitmap
+                    shareImageWhatsApp(shareImage!!)
+                }
             }
+//            if (shareImage != null) {
+//                shareImageWhatsApp(shareImage!!)
+//            } else {
+//                val url1 = if (!Prefs.shareImageUrl.isNullOrEmpty()) Prefs.shareImageUrl
+//                else "http://vishwainfotech.co.in/api/Kunaljadhav/images/111.jpg"
+//                DownloadTask().execute(stringToURL(url1))
+//            }
         }
     }
 
@@ -876,7 +886,7 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
             val f = File(
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    .toString() + File.separator + "temporary_file_${time}.jpg"
+                    .toString() + File.separator + "share_file_${voter?.villageNo}.jpg"
             )
             try {
                 if (f.exists()) {
@@ -887,13 +897,7 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-            share.putExtra(
-                Intent.EXTRA_STREAM,
-                Uri.parse(
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                        .toString() + File.separator + "temporary_file_${time}.jpg"
-                )
-            )
+            share.putExtra(Intent.EXTRA_STREAM, Uri.parse(f.absolutePath))
 
 //            val name = binding.etVotername.text.toString()
             val msg = generateMessage(true)
@@ -913,55 +917,6 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
             startActivity(intent)
         }
     }
-
-    private fun getLocalBitmapUri(bmp: Bitmap): Uri? {
-        var bmpUri: Uri? = null
-        val storage = Environment.getExternalStorageState()
-        val path: File? =
-            when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
-                    getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                }
-
-                storage == Environment.MEDIA_MOUNTED -> {
-                    File(Environment.getExternalStorageDirectory().toString())
-                }
-
-                else -> {
-                    File(filesDir, getString(R.string.app_name))
-                }
-            }
-
-// Make sure the path directory exists.
-        if (path != null && !path.exists()) {
-// Make it, if it doesn't exit
-            path.mkdirs()
-        }
-        val file = File(path, "temp_image.png")
-        val bytes = ByteArrayOutputStream()
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val out: FileOutputStream?
-        try {
-            out = FileOutputStream(file)
-            out.write(bytes.toByteArray())
-            try {
-                out.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            bmpUri = FileProvider.getUriForFile(
-                this,
-                applicationContext
-                    .packageName + ".utils.GenericFileProvider", file
-            )
-
-            //Uri.fromFile(file)
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        }
-        return bmpUri
-    }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -1022,8 +977,8 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
                     "\n" + getString(R.string.epic_no) + " :-  " + voter?.cardNo +
                     "\n" + getString(R.string.polling_station) + " :- " + booth?.getName() +
                     "\n\n---------------------------------------\n\n"
-            if (isAddFooter && !Prefs.footerMessage.isNullOrEmpty()) {
-                msg += Prefs.footerMessage + "\n"
+            if (isAddFooter && !Prefs.setting?.message.isNullOrEmpty()) {
+                msg += Prefs.setting?.message + "\n"
             }
             msg += getString(R.string.voting_date) + " :-  " + date +
                     "\n" + getString(R.string.voting_time) + " :-  " + time

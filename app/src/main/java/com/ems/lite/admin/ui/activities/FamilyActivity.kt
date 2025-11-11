@@ -87,8 +87,8 @@ class FamilyActivity : BaseActivity(), OnClickListener {
     private var booth: Booth? = null
     private var voter: Voter? = null
     private var shareNumber = ""
-    private val date = Prefs.votingDate
-    private val time = Prefs.votingTime
+    private val date = Prefs.setting?.votingDate
+    private val time = Prefs.setting?.votingTime
     private var initialized = false
     private var selectedStatus: String? = null
 
@@ -469,7 +469,7 @@ class FamilyActivity : BaseActivity(), OnClickListener {
             if (shareImage != null) {
                 shareImageWhatsApp(shareImage!!)
             } else {
-                val url1 = if (!Prefs.shareImageUrl.isNullOrEmpty()) Prefs.shareImageUrl
+                val url1 = if (!Prefs.setting?.shareImage.isNullOrEmpty()) Prefs.setting!!.shareImage
                 else "http://vishwainfotech.co.in/api/Kunaljadhav/images/111.jpg"
                 DownloadTask().execute(stringToURL(url1))
             }
@@ -504,7 +504,7 @@ class FamilyActivity : BaseActivity(), OnClickListener {
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
             val f = File(
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    .toString() + File.separator + "temporary_file_${time}.jpg"
+                    .toString() + File.separator + "share_file_${voter?.villageNo}.jpg"
             )
             try {
                 if (f.exists()) {
@@ -520,13 +520,7 @@ class FamilyActivity : BaseActivity(), OnClickListener {
                 shareNumber = "91$shareNumber"
             }
             Log.e("aaa", shareNumber + "-")
-            share.putExtra(
-                Intent.EXTRA_STREAM,
-                Uri.parse(
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                        .toString() + File.separator + "temporary_file_${time}.jpg"
-                )
-            )
+            share.putExtra(Intent.EXTRA_STREAM, Uri.parse(f.absolutePath))
             val msg = generateMessage(true)
             share.putExtra(Intent.EXTRA_TEXT, msg)
             share.putExtra(
@@ -592,8 +586,8 @@ class FamilyActivity : BaseActivity(), OnClickListener {
                     msg += "\n-------------------------------------------\n"
                 }
             }
-            if (isAddFooter && !Prefs.footerMessage.isNullOrEmpty()) {
-                msg += Prefs.footerMessage + "\n"
+            if (isAddFooter && !Prefs.setting?.message.isNullOrEmpty()) {
+                msg += Prefs.setting?.message + "\n"
             }
 
             if (!date.isNullOrEmpty() && !time.isNullOrEmpty()) {
