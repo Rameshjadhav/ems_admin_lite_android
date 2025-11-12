@@ -87,8 +87,8 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
     private val religionList: ArrayList<Religion> = arrayListOf()
     private var voter: Voter? = null
     private var booth: Booth? = null
-    private val date = Prefs.setting?.votingDate
-    private val time = Prefs.setting?.votingTime
+    private var date = selectedVillageSetting?.votingDate
+    private var time = selectedVillageSetting?.votingTime
     private var initialized = false
     private var selectedStatus: String? = null
     private val selectedDateTime = Calendar.getInstance()
@@ -109,11 +109,14 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun init() {
+        date = selectedVillageSetting?.votingDate
+        time = selectedVillageSetting?.votingTime
         val id = intent.getIntExtra(IntentConstants.ID, 0)
 //        val st=intent.getStringExtra(IntentConstants.ID)
         CoroutineScope(Dispatchers.Main).launch {
             voter = commonViewModel.getDB().voterDao().get(id)
             if (voter != null) {
+                checkVillageSetting(voter!!.villageNo)
                 binding.tvName.setText(
                     if (!voter?.getFullName().isNullOrEmpty()) voter?.getFullName()!! else ""
                 )
@@ -394,23 +397,23 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
                 ).map { textToBitmap(it) }
 
                 val dateBitmaps = wrapText(
-                    getString(R.string.voting_date) + " :-  " + date,
+                    getString(R.string.voting_date) + " :-  " + (date?:"-"),
                     maxWidth
                 ).map { textToBitmap(it) }
 
                 val timeBitmaps = wrapText(
-                    getString(R.string.voting_time) + " :-  " + time,
+                    getString(R.string.voting_time) + " :-  " + (time?:"-"),
                     maxWidth
                 ).map { textToBitmap(it) }
 
 
                 val formattedText = buildString {
 
-                    if (printImage != null && Prefs.isWithImageMsg)
+                    if (selectedVillageSetting?.printImageBitmap != null && Prefs.isWithImageMsg)
                         append(
                             "[C]<img>${
                                 PrinterTextParserImg.bitmapToHexadecimalString(
-                                    printer, printImage
+                                    printer, selectedVillageSetting?.printImageBitmap
                                 )
                             }</img>\n"
                         )
@@ -830,23 +833,16 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
         if (Prefs.isGeneralMsg || !Prefs.isWithImageMsg) {
             shareGeneralWhatsappMessage()
         } else {
-            val url1 = if (!Prefs.setting?.shareImage.isNullOrEmpty()) Prefs.setting?.shareImage!!
-            else "http://vishwainfotech.co.in/api/Kunaljadhav/images/111.jpg"
-            showHideProgress(true)
-            downloadBitmap(url1) { bitmap ->
-                showHideProgress(false)
-                if (bitmap != null) {
-                    shareImage = bitmap
-                    shareImageWhatsApp(shareImage!!)
-                }
+            if (selectedVillageSetting?.shareImage.isNullOrEmpty()) {
+                shareGeneralWhatsappMessage()
+            } else if (selectedVillageSetting?.shareImageBitmap != null) {
+                shareImageWhatsApp(selectedVillageSetting?.shareImageBitmap!!)
+            } else {
+                val url1 =
+                    if (!selectedVillageSetting?.shareImage.isNullOrEmpty()) selectedVillageSetting?.shareImage
+                    else "http://vishwainfotech.co.in/api/Kunaljadhav/images/111.jpg"
+                DownloadTask().execute(stringToURL(url1))
             }
-//            if (shareImage != null) {
-//                shareImageWhatsApp(shareImage!!)
-//            } else {
-//                val url1 = if (!Prefs.shareImageUrl.isNullOrEmpty()) Prefs.shareImageUrl
-//                else "http://vishwainfotech.co.in/api/Kunaljadhav/images/111.jpg"
-//                DownloadTask().execute(stringToURL(url1))
-//            }
         }
     }
 
@@ -870,7 +866,7 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
     private fun shareImageWhatsApp(bmp: Bitmap) {
         shareNumber = shareNumber.replace("+", "")
         val name = binding.tvName.text.toString()
-        if (checkContacts(shareNumber) == 1) {
+        if (shareNumber.isNullOrEmpty() || checkContacts(shareNumber) == 1) {
 
             val time = System.currentTimeMillis()
             val share = Intent("android.intent.action.MAIN")
@@ -980,8 +976,8 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
             if (isAddFooter && !Prefs.setting?.message.isNullOrEmpty()) {
                 msg += Prefs.setting?.message + "\n"
             }
-            msg += getString(R.string.voting_date) + " :-  " + date +
-                    "\n" + getString(R.string.voting_time) + " :-  " + time
+            msg += getString(R.string.voting_date) + " :-  " + (date?:"-") +
+                    "\n" + getString(R.string.voting_time) + " :-  " + (time?:"-")
         }
         return msg
     }

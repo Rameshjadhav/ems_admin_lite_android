@@ -16,7 +16,9 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
+import android.os.PersistableBundle
 import android.provider.BaseColumns
 import android.provider.ContactsContract
 import android.view.MenuItem
@@ -29,6 +31,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.lifecycle.lifecycleScope
 import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection
 import com.ems.lite.admin.FetchVoterService
 import com.ems.lite.admin.R
@@ -43,6 +46,8 @@ import com.ems.lite.admin.model.request.VillageListRequest
 import com.ems.lite.admin.model.response.ResponseStatus
 import com.ems.lite.admin.model.table.CountBy
 import com.ems.lite.admin.model.table.Voter
+import com.ems.lite.admin.network.NetworkUtils
+import com.ems.lite.admin.network.Status
 import com.ems.lite.admin.utils.CommonUtils
 import com.ems.lite.admin.utils.ContextWrapper
 import com.ems.lite.admin.utils.CustomProgressDialog
@@ -76,8 +81,6 @@ import kotlin.collections.ArrayList
 open class BaseActivity : AppCompatActivity() {
     companion object {
         var selectedPrinter: BluetoothConnection? = null
-        var shareImage: Bitmap? = null
-        var printImage: Bitmap? = null
         val settingList: ArrayList<Setting> = arrayListOf()
         var selectedVillageSetting: Setting? = null
 
@@ -148,10 +151,101 @@ open class BaseActivity : AppCompatActivity() {
         return false
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (this is VoterDetailsActivity
+            || this is SearchActivity
+            || this is FamilyActivity
+        ) {
+            initObserver()
+        }
+    }
 
     override fun attachBaseContext(newBase: Context?) {
         val context = ContextWrapper.wrap(newBase!!, Locale(Prefs.lang))
         super.attachBaseContext(context)
+    }
+
+    fun checkVillageSetting(villageNo: Long) {
+        if (villageNo != 0L) {
+            if (settingList.isEmpty()) {
+                if (CommonUtils.isNetworkAvailable(this))
+                    voterViewModel.getSetting(villageNo)
+            } else {
+                selectedVillageSetting = settingList.find { it.villageNo == villageNo }
+                if (selectedVillageSetting != null) {
+                    if (selectedVillageSetting?.shareImageBitmap == null) {
+                        downloadShareImage()
+                    } else if (selectedVillageSetting?.printImageBitmap == null) {
+                        downloadPrintImage()
+                    }
+                } else {
+                    if (CommonUtils.isNetworkAvailable(this))
+                        voterViewModel.getSetting(villageNo)
+                }
+            }
+        }
+    }
+
+    fun downloadShareImage() {
+        if (!selectedVillageSetting?.shareImage.isNullOrEmpty()) {
+            val url1 =
+                if (!selectedVillageSetting?.shareImage.isNullOrEmpty()) selectedVillageSetting?.shareImage
+                else "http://vishwainfotech.co.in/api/Kunaljadhav/images/111.jpg"
+            DownloadTask().execute(stringToURL(url1))
+        }
+    }
+
+    fun downloadPrintImage() {
+        if (!selectedVillageSetting?.printImage.isNullOrEmpty()) {
+            val url1 =
+                if (!selectedVillageSetting?.printImage.isNullOrEmpty()) selectedVillageSetting?.printImage
+                else "http://vishwainfotech.co.in/api/Kunaljadhav/images/111.jpg"
+            DownloadHeaderImageTask().execute(stringToURL(url1))
+        }
+    }
+
+    private fun initObserver() {
+        lifecycleScope.launch {
+            voterViewModel.getSettingState.collect {
+                when (it.status) {
+                    Status.LOADING -> {
+                    }
+
+                    Status.SUCCESS -> {
+                        if (it.data != null && it.code == ResponseStatus.STATUS_CODE_SUCCESS) {
+                            selectedVillageSetting = it.data.info
+                            addInSettingList()
+                        } else {
+                            CommonUtils.showErrorMessage(this@BaseActivity, it.message)
+                        }
+                    }
+
+                    Status.ERROR -> {
+                        CommonUtils.showErrorMessage(this@BaseActivity, it.message)
+                    }
+                }
+            }
+        }
+    }
+
+    fun addInSettingList() {
+        if (selectedVillageSetting != null) {
+            if (settingList.isEmpty()) {
+                settingList.add(selectedVillageSetting!!)
+            } else {
+                val oldSetting =
+                    settingList.find { it.villageNo == selectedVillageSetting?.villageNo }
+                if (oldSetting != null)
+                    settingList.remove(oldSetting)
+                settingList.add(selectedVillageSetting!!)
+            }
+            if (selectedVillageSetting?.shareImageBitmap == null) {
+                downloadShareImage()
+            } else if (selectedVillageSetting?.printImageBitmap == null) {
+                downloadPrintImage()
+            }
+        }
     }
 
     fun syncTables() {
@@ -475,12 +569,27 @@ open class BaseActivity : AppCompatActivity() {
         override fun onPostExecute(result: Bitmap?) {
             // Hide the progress dialog
             if (result != null) {
-                shareImage = result
-                if (printImage == null) {
+                selectedVillageSetting?.shareImageBitmap = result
+                addInSettingList()
+                if (selectedVillageSetting?.printImageBitmap == null) {
                     val url1 =
-                        if (!Prefs.setting?.printImage.isNullOrEmpty()) Prefs.setting?.printImage
+                        if (!selectedVillageSetting?.printImage.isNullOrEmpty()) selectedVillageSetting?.printImage
                         else "http://vishwainfotech.co.in/api/Kunaljadhav/images/111.jpg"
                     DownloadHeaderImageTask().execute(stringToURL(url1))
+                }
+            }
+        }
+
+        private fun addInSettingList() {
+            if (selectedVillageSetting != null) {
+                if (settingList.isEmpty()) {
+                    settingList.add(selectedVillageSetting!!)
+                } else {
+                    val oldSetting =
+                        settingList.find { it.villageNo == selectedVillageSetting?.villageNo }
+                    if (oldSetting != null)
+                        settingList.remove(oldSetting)
+                    settingList.add(selectedVillageSetting!!)
                 }
             }
         }
@@ -510,11 +619,26 @@ open class BaseActivity : AppCompatActivity() {
         override fun onPostExecute(result: Bitmap?) {
             // Hide the progress dialog
             if (result != null) {
-                printImage = result
+                selectedVillageSetting?.printImageBitmap = result
+                addInSettingList()
                 val stream = ByteArrayOutputStream()
                 result.compress(Bitmap.CompressFormat.PNG, 100, stream)
                 val byteArray: ByteArray = stream.toByteArray()
-                Prefs.headerImage = Base64.getEncoder().encodeToString(byteArray)
+//                Prefs.headerImage = Base64.getEncoder().encodeToString(byteArray)
+            }
+        }
+
+        private fun addInSettingList() {
+            if (selectedVillageSetting != null) {
+                if (settingList.isEmpty()) {
+                    settingList.add(selectedVillageSetting!!)
+                } else {
+                    val oldSetting =
+                        settingList.find { it.villageNo == selectedVillageSetting?.villageNo }
+                    if (oldSetting != null)
+                        settingList.remove(oldSetting)
+                    settingList.add(selectedVillageSetting!!)
+                }
             }
         }
     }
@@ -533,6 +657,8 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     protected fun checkContacts(phone: String): Int {
+        if (phone.isEmpty())
+            return 0
         val uri =
             Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phone))
         var found = 0

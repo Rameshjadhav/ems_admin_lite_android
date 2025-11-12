@@ -122,7 +122,8 @@ class SettingActivity : ImagePicker(), View.OnClickListener {
                             )
                             val response = it.data
                             Prefs.setting = response.info
-                            printImage = null
+                            selectedVillageSetting = it.data.info
+                            addInSettingList()
                             init()
                         } else {
                             CommonUtils.showErrorMessage(this@SettingActivity, it.message)

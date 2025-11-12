@@ -393,6 +393,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK && result.data != null) {
                 selectedVillage = IntentUtils.getVillageFromIntent(result.data)
+                checkVillageSetting(selectedVillage?.villageNo ?: 0)
                 updateVillage()
             }
         }

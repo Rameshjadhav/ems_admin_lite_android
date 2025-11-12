@@ -74,11 +74,11 @@ class LauncherActivity : BaseActivity() {
         if (Prefs.password.isNullOrEmpty()) {
             showEnterPasswordDialog()
         } else {
-            val setting = Prefs.setting
-            if (setting == null) {
+            val mainBannerImageUrl = Prefs.mainBannerImageUrl
+            if (mainBannerImageUrl.isNullOrEmpty()) {
                 getAppSettings()
             } else {
-                binding.image = setting.mainBanner
+                binding.image = mainBannerImageUrl
 //                downloadShareImage()
             }
         }
@@ -131,7 +131,6 @@ class LauncherActivity : BaseActivity() {
                 if (response != null && response.statusCode == ResponseStatus.STATUS_CODE_SUCCESS) {
                     Prefs.mainBannerImageUrl = response.info?.mainBanner
                     binding.image = response.info?.mainBanner
-//                    downloadShareImage()
                 } else if (response?.error != null) {
                     CommonUtils.showToast(this, response.error!!.message)
                 }
@@ -139,12 +138,6 @@ class LauncherActivity : BaseActivity() {
         } else {
             CommonUtils.showToast(this, getString(R.string.no_internet_connection))
         }
-    }
-
-    private fun downloadShareImage() {
-        val url1 = if (!Prefs.setting?.shareImage.isNullOrEmpty()) Prefs.setting?.shareImage
-        else "http://vishwainfotech.co.in/api/Kunaljadhav/images/111.jpg"
-        DownloadTask().execute(stringToURL(url1))
     }
 
     private fun showEnterPasswordDialog() {

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">EMS Admin</string>
+    <string name="app_name" translatable="false">EMS Admin Lite</string>
     <string name="todo" translatable="false">TODO</string>
     <string name="local" translatable="false">Local</string>
     <string name="select_voter_position" translatable="false">Select voter position</string>

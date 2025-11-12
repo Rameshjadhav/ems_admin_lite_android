@@ -28,6 +28,9 @@ class Setting() : Parcelable {
     @SerializedName("mainbanner")
     var mainBanner: String? = null
 
+    @SerializedName("village_no")
+    var villageNo:Long =0
+
     var shareImageBitmap: Bitmap? = null
     var printImageBitmap: Bitmap? = null
 
@@ -39,6 +42,7 @@ class Setting() : Parcelable {
         shareImage = parcel.readString()
         printImage = parcel.readString()
         mainBanner = parcel.readString()
+        villageNo = parcel.readLong()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -49,6 +53,7 @@ class Setting() : Parcelable {
         parcel.writeString(shareImage)
         parcel.writeString(printImage)
         parcel.writeString(mainBanner)
+        parcel.writeLong(villageNo)
     }
 
     override fun describeContents(): Int {

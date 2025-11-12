@@ -86,10 +86,6 @@ object Prefs {
     var lang: String
         get() = prefs.getString(LANGUAGE, Enums.Language.mr.toString())!!
         set(value) = prefs.edit().putString(LANGUAGE, value).apply()
-    var headerImage: String?
-        get() = prefs.getString(HEADER_IMAGE, "")
-        set(value) = prefs.edit().putString(HEADER_IMAGE, value).apply()
-
     var printerName: String?
         get() = prefs.getString(PRINTER_NAME, "")
         set(value) = prefs.edit().putString(PRINTER_NAME, value).apply()

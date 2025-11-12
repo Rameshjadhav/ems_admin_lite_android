@@ -87,8 +87,8 @@ class FamilyActivity : BaseActivity(), OnClickListener {
     private var booth: Booth? = null
     private var voter: Voter? = null
     private var shareNumber = ""
-    private val date = Prefs.setting?.votingDate
-    private val time = Prefs.setting?.votingTime
+    private var date = selectedVillageSetting?.votingDate
+    private var time = selectedVillageSetting?.votingTime
     private var initialized = false
     private var selectedStatus: String? = null
 
@@ -104,6 +104,8 @@ class FamilyActivity : BaseActivity(), OnClickListener {
     }
 
     private fun init() {
+        date = selectedVillageSetting?.votingDate
+        time = selectedVillageSetting?.votingTime
         initCastSpinner()
         intent?.run {
             val voterId = getIntExtra(IntentConstants.VOTER_ID, 0)
@@ -111,6 +113,7 @@ class FamilyActivity : BaseActivity(), OnClickListener {
                 val v = commonViewModel.getDB().voterDao()
                     .getVoterById(voterId!!)
                 voter = v
+                checkVillageSetting(voter?.villageNo ?: 0)
                 searchVoter()
             }
         }
@@ -344,23 +347,23 @@ class FamilyActivity : BaseActivity(), OnClickListener {
                 val titleBitmap = TitleBitmap(getString(R.string.voter_detail))
 
                 val dateBitmaps = wrapText(
-                    getString(R.string.voting_date) + " :-  " + date,
+                    getString(R.string.voting_date) + " :-  " + (date?:"-"),
                     maxWidth
                 ).map { textToBitmap(it) }
 
                 val timeBitmaps = wrapText(
-                    getString(R.string.voting_time) + " :-  " + time,
+                    getString(R.string.voting_time) + " :-  " + (time?:"-"),
                     maxWidth
                 ).map { textToBitmap(it) }
 
 
                 val formattedText = buildString {
 
-                    if (printImage != null && Prefs.isWithImageMsg)
+                    if (selectedVillageSetting?.printImageBitmap != null && Prefs.isWithImageMsg)
                         append(
                             "[C]<img>${
                                 PrinterTextParserImg.bitmapToHexadecimalString(
-                                    printer, printImage
+                                    printer, selectedVillageSetting?.printImageBitmap
                                 )
                             }</img>\n"
                         )
@@ -465,12 +468,14 @@ class FamilyActivity : BaseActivity(), OnClickListener {
         if (Prefs.isGeneralMsg || !Prefs.isWithImageMsg) {
             shareGeneralWhatsappMessage()
         } else {
-
-            if (shareImage != null) {
-                shareImageWhatsApp(shareImage!!)
+            if (selectedVillageSetting?.shareImage.isNullOrEmpty()) {
+                shareGeneralWhatsappMessage()
+            } else if (selectedVillageSetting?.shareImageBitmap != null) {
+                shareImageWhatsApp(selectedVillageSetting?.shareImageBitmap!!)
             } else {
-                val url1 = if (!Prefs.setting?.shareImage.isNullOrEmpty()) Prefs.setting!!.shareImage
-                else "http://vishwainfotech.co.in/api/Kunaljadhav/images/111.jpg"
+                val url1 =
+                    if (!selectedVillageSetting?.shareImage.isNullOrEmpty()) selectedVillageSetting?.shareImage
+                    else "http://vishwainfotech.co.in/api/Kunaljadhav/images/111.jpg"
                 DownloadTask().execute(stringToURL(url1))
             }
         }
@@ -495,7 +500,7 @@ class FamilyActivity : BaseActivity(), OnClickListener {
 
     fun shareImageWhatsApp(bmp: Bitmap) {
         shareNumber = shareNumber.replace("+", "")
-        if (checkContacts(shareNumber) == 1) {
+        if (shareNumber.isNullOrEmpty() || checkContacts(shareNumber) == 1) {
             val time = System.currentTimeMillis()
             val share = Intent("android.intent.action.MAIN")
             share.action = Intent.ACTION_SEND
