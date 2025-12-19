@@ -40,4 +40,7 @@ abstract class BoothDao {
 
     @Query("SELECT * FROM `Booth` where boothName=:bName OR boothNameEng=:bName")
     abstract fun getBoothId(bName: String): Booth
+
+    @Query("SELECT * FROM `Booth` where boothNo=:boothNo")
+    abstract fun getBoothByNo(boothNo: Long): Booth?
 }

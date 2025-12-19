@@ -187,11 +187,10 @@
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginTop="@dimen/dp_5"
                 android:background="@drawable/edit_bg_gray"
-                android:hint="@string/search_all"
+                android:hint="@string/search_voter_like"
                 android:imeOptions="actionNext"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/lbl_select_booth"
@@ -199,6 +198,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cr_name_search"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 

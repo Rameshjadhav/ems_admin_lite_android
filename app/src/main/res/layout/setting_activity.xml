@@ -99,6 +99,27 @@
                         android:textSize="15sp" />
 
                 </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_15"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/search_by_full_name"
+                        android:textColor="@color/secondary_text_color"
+                        android:textSize="@dimen/sp_15" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_full_search"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/dp_30" />
+
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="match_parent"

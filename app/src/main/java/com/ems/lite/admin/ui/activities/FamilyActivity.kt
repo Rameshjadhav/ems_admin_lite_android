@@ -1,5 +1,6 @@
 package com.ems.lite.admin.ui.activities
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -28,6 +29,7 @@ import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dantsu.escposprinter.EscPosPrinter
 import com.dantsu.escposprinter.textparser.PrinterTextParserImg
@@ -36,16 +38,19 @@ import com.ems.lite.admin.databinding.ActivityFamilyBinding
 import com.ems.lite.admin.databinding.DialogUpdateVoterDetailsBinding
 import com.ems.lite.admin.di.viewmodel.VoterViewModel
 import com.ems.lite.admin.interfaces.DialogClickListener
+import com.ems.lite.admin.model.dto.FamilyVoterDto
 import com.ems.lite.admin.model.table.Booth
 import com.ems.lite.admin.model.table.Cast
 import com.ems.lite.admin.model.table.Profession
 import com.ems.lite.admin.model.table.Voter
+import com.ems.lite.admin.print.InsecureBluetoothConnection
 import com.ems.lite.admin.ui.adapters.FamilyMemberListAdapter
 import com.ems.lite.admin.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.*
 
 @AndroidEntryPoint
@@ -80,11 +85,10 @@ class FamilyActivity : BaseActivity(), OnClickListener {
 
     private lateinit var binding: ActivityFamilyBinding
     private val commonViewModel: VoterViewModel by viewModels()
-    private val voterList: ArrayList<Voter> = arrayListOf()
+    private val voterList: ArrayList<FamilyVoterDto> = arrayListOf()
     private val castList: ArrayList<Cast> = arrayListOf()
     private val professionList: ArrayList<Profession> = arrayListOf()
     private lateinit var voterListAdapter: FamilyMemberListAdapter
-    private var booth: Booth? = null
     private var voter: Voter? = null
     private var shareNumber = ""
     private var date = selectedVillageSetting?.votingDate
@@ -123,12 +127,11 @@ class FamilyActivity : BaseActivity(), OnClickListener {
         CustomProgressDialog.showProgressDialog(this)
         CoroutineScope(Dispatchers.Main).launch {
             val list = commonViewModel.getDB().voterDao()
-                .getFamilyList(voter?.houseNo)
+                .getFamilyList(voter?.houseNo, Prefs.lang)
             voterList.clear()
             if (!list.isNullOrEmpty()) {
                 voterList.addAll(list)
                 prefilledMobile()
-                booth = commonViewModel.getDB().BoothDao().get(voter?.boothNo)
                 updateFamilyCompleteBtn()
 
 //                binding.etMobno.setText(if (!voter?.mobileNo.isNullOrEmpty()) voter?.mobileNo else "")
@@ -152,15 +155,15 @@ class FamilyActivity : BaseActivity(), OnClickListener {
     }
 
     private fun prefilledMobile() {
-        val familyHead = voterList.find { it.familyHead == 1 }
+        val familyHead = voterList.find { it.voter.familyHead == 1 }
         if (familyHead != null) {
-            binding.etMobno.setText(familyHead.mobileNo ?: "")
+            binding.etMobno.setText(familyHead.voter.mobileNo ?: "")
         }
     }
 
     private fun updateFamilyCompleteBtn() {
-        val isNotCompleted = voterList.find { it.completedFamily == 0 }
-        val isUnknown = voterList.find { it.completedFamily == 2 }
+        val isNotCompleted = voterList.find { it.voter.completedFamily == 0 }
+        val isUnknown = voterList.find { it.voter.completedFamily == 2 }
         if (isNotCompleted != null || isUnknown != null) {
             binding.btnCompleteFamily.text = getString(R.string.complete_family)
             binding.btnCompleteFamily.isEnabled = true
@@ -226,24 +229,30 @@ class FamilyActivity : BaseActivity(), OnClickListener {
 
             R.id.btn_complete_family -> {
                 if (voterList.isNotEmpty()) {
+                    val user = Prefs.user
                     CoroutineScope(Dispatchers.Main).launch {
                         val mobile = binding.etMobno.text.toString().trim()
                         val cast = castList[binding.spCast.selectedItemPosition]
                         voterList.forEach {
-                            it.updated = 1
-                            it.completedFamily = 1
+                            it.voter.updated = 1
+                            it.voter.completedFamily = 1
+                            it.voter.userId = user?.userId?.toLong() ?: 0
                             if (mobile.isNotEmpty() && mobile.length == 10) {
-                                it.mobileNo = mobile
+                                it.voter.mobileNo = mobile
                             }
                             if (cast.castNo != 0L) {
-                                it.castNo = cast.castNo
+                                it.voter.castNo = cast.castNo
                             }
                             if (!selectedStatus.isNullOrEmpty() && selectedStatus != Enums.Status.SELECT.toString()) {
-                                it.voterStatusName = selectedStatus
+                                it.voter.voterStatusName = selectedStatus
                             }
                         }
+                        val list: ArrayList<Voter> = arrayListOf()
+                        voterList.forEach {
+                            list.add(it.voter)
+                        }
                         commonViewModel.getDB().voterDao()
-                            .insert(voterList)
+                            .insert(list)
                         CommonUtils.showToast(
                             this@FamilyActivity, getString(R.string.voter_updated_successfully)
                         )
@@ -255,13 +264,14 @@ class FamilyActivity : BaseActivity(), OnClickListener {
                 if (voterList.isNotEmpty()) {
                     val user = Prefs.user
                     CoroutineScope(Dispatchers.Main).launch {
+                        val list: ArrayList<Voter> = arrayListOf()
                         voterList.forEach {
-                            it.updated = 1
-                            it.completedFamily = 2
-                            it.userId = user?.userId?.toLong() ?: 0
+                            it.voter.updated = 1
+                            it.voter.completedFamily = 2
+                            it.voter.userId = user?.userId?.toLong() ?: 0
+                            list.add(it.voter)
                         }
-                        commonViewModel.getDB().voterDao()
-                            .insert(voterList)
+                        commonViewModel.getDB().voterDao().insert(list)
                         CommonUtils.showToast(
                             this@FamilyActivity, getString(R.string.voter_updated_successfully)
                         )
@@ -272,38 +282,38 @@ class FamilyActivity : BaseActivity(), OnClickListener {
             R.id.btn_whatsapp -> {
                 val extra = "91"
                 val number = binding.etMobno.getText().toString().filter { !it.isWhitespace() }
-                if (number.isNotEmpty()) {
-                    val nosize = number.length
+//                if (number.isNotEmpty()) {
+                val nosize = number.length
 
-                    if (nosize == 10) {
-                        shareNumber = (extra + number).toString()
-                    }
-                    if (nosize == 13) {
-                        shareNumber = number
-                    }
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !hasPermissions(
-                            this,
-                            *PERMISSIONS_31
-                        )
-                    ) {
-                        ActivityCompat.requestPermissions(
-                            this, PERMISSIONS_31,
-                            PERMISSION_ALL
-                        )
-                    } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
-                        && !hasPermissions(this, *PERMISSIONS)
-                    ) {
-                        ActivityCompat.requestPermissions(
-                            this, PERMISSIONS,
-                            PERMISSION_ALL
-                        )
-                    } else {
-//                        shareFromRaw()
-                        shareItemFromServer()
-                    }
-                } else {
-                    CommonUtils.showToast(this, getString(R.string.pls_enter_valid_mobile_number))
+                if (nosize == 10) {
+                    shareNumber = (extra + number).toString()
                 }
+                if (nosize == 13) {
+                    shareNumber = number
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !hasPermissions(
+                        this,
+                        *PERMISSIONS_31
+                    )
+                ) {
+                    ActivityCompat.requestPermissions(
+                        this, PERMISSIONS_31,
+                        PERMISSION_ALL
+                    )
+                } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
+                    && !hasPermissions(this, *PERMISSIONS)
+                ) {
+                    ActivityCompat.requestPermissions(
+                        this, PERMISSIONS,
+                        PERMISSION_ALL
+                    )
+                } else {
+//                        shareFromRaw()
+                    shareItemFromServer()
+                }
+//                } else {
+//                    CommonUtils.showToast(this, getString(R.string.pls_enter_valid_mobile_number))
+//                }
             }
 
             R.id.btn_send_sms -> {
@@ -339,34 +349,51 @@ class FamilyActivity : BaseActivity(), OnClickListener {
     }
 
     private fun print() {
-        selectedPrinter?.let { printerConnection ->
+        date = selectedVillageSetting?.votingDate
+        time = selectedVillageSetting?.votingTime
+        binding.btnPrint.isEnabled = false
+        lifecycleScope.launch(Dispatchers.IO) {
+            val printerConnection = InsecureBluetoothConnection(selectedPrinter!!)
+
             try {
-                val printer = EscPosPrinter(printerConnection, 203, 48f, 32)
+                // 1. Connect explicitly
+                printerConnection.connect()
+
+                val printer = EscPosPrinter(printerConnection, 205, 48f, 32)
                 // Define maximum width based on your printer's width
-                val maxWidth = 40 // Adjust this based on your printer's width for the main content
+                val maxWidth = 46 // Adjust this based on your printer's width for the main content
+                val width = printer.printerWidthPx
                 val titleBitmap = TitleBitmap(getString(R.string.voter_detail))
 
                 val dateBitmaps = wrapText(
-                    getString(R.string.voting_date) + " :-  " + (date?:"-"),
+                    getString(R.string.voting_date) + " :-  " + (date ?: "-"),
                     maxWidth
                 ).map { textToBitmap(it) }
 
                 val timeBitmaps = wrapText(
-                    getString(R.string.voting_time) + " :-  " + (time?:"-"),
+                    getString(R.string.voting_time) + " :-  " + (time ?: "-"),
                     maxWidth
                 ).map { textToBitmap(it) }
 
 
                 val formattedText = buildString {
-
-                    if (selectedVillageSetting?.printImageBitmap != null && Prefs.isWithImageMsg)
+                    if (selectedVillageSetting?.printImageBitmap != null && Prefs.isWithImageMsg) {
+                        val resizedBitmap =
+//                            if (width != selectedVillageSetting?.printImageBitmap!!.width) {
+                            resizeBitmapFor2InchPrinter(
+                                selectedVillageSetting?.printImageBitmap!!, width
+                            )
+//                            } else {
+//                                selectedVillageSetting?.printImageBitmap!!
+//                            }
                         append(
                             "[C]<img>${
                                 PrinterTextParserImg.bitmapToHexadecimalString(
-                                    printer, selectedVillageSetting?.printImageBitmap
+                                    printer, resizedBitmap
                                 )
                             }</img>\n"
                         )
+                    }
                     append(
                         "[C]<img>${
                             PrinterTextParserImg.bitmapToHexadecimalString(
@@ -375,19 +402,24 @@ class FamilyActivity : BaseActivity(), OnClickListener {
                         }</img>\n"
                     )
 
-                    voterList.forEach { voter ->
+                    voterList.forEach { familyVoterDto ->
                         val nameBitmaps = wrapText(
-                            getString(R.string.voter_name) + " :-  " + voter.voterName,
+                            getString(R.string.voter_name) + " :-  " + familyVoterDto.voter.voterName,
                             maxWidth
                         ).map { textToBitmap(it) }
 
                         val voterNoBitmaps = wrapText(
-                            getString(R.string.voter_no) + " :-  " + voter.voterNo,
+                            getString(R.string.voter_no) + " :-  " + familyVoterDto.voter.voterNo,
                             maxWidth
                         ).map { textToBitmap(it) }
 
                         val epicNoBitmaps = wrapText(
-                            getString(R.string.epic_no) + " :-  " + voter.cardNo,
+                            getString(R.string.epic_no) + " :-  " + familyVoterDto.voter.cardNo,
+                            maxWidth
+                        ).map { textToBitmap(it) }
+
+                        val pollingStationBitmaps = wrapText(
+                            getString(R.string.polling_station) + " :-  " + familyVoterDto.boothName,
                             maxWidth
                         ).map { textToBitmap(it) }
 
@@ -415,25 +447,34 @@ class FamilyActivity : BaseActivity(), OnClickListener {
                                     PrinterTextParserImg.bitmapToHexadecimalString(
                                         printer, bitmap
                                     )
-                                }</img>\n\n"
+                                }</img>\n"
+                            )
+                        }
+                        pollingStationBitmaps.forEach { bitmap ->
+                            append(
+                                "[L]<img>${
+                                    PrinterTextParserImg.bitmapToHexadecimalString(
+                                        printer, bitmap
+                                    )
+                                }</img>\n"
                             )
                         }
                     }
 
-                    val pollingStationBitmaps = wrapText(
-                        getString(R.string.polling_station) + " :- " + booth?.getName(),
-                        maxWidth
-                    ).map { textToBitmap(it) }
-
-                    pollingStationBitmaps.forEach { bitmap ->
-                        append(
-                            "[L]<img>${
-                                PrinterTextParserImg.bitmapToHexadecimalString(
-                                    printer, bitmap
-                                )
-                            }</img>\n"
-                        )
-                    }
+//                    val pollingStationBitmaps = wrapText(
+//                        getString(R.string.polling_station) + " :- " + booth?.getName(),
+//                        maxWidth
+//                    ).map { textToBitmap(it) }
+//
+//                    pollingStationBitmaps.forEach { bitmap ->
+//                        append(
+//                            "[L]<img>${
+//                                PrinterTextParserImg.bitmapToHexadecimalString(
+//                                    printer, bitmap
+//                                )
+//                            }</img>\n"
+//                        )
+//                    }
                     append("------------------\n")
 
                     dateBitmaps.forEach { bitmap ->
@@ -455,12 +496,31 @@ class FamilyActivity : BaseActivity(), OnClickListener {
                         )
                     }
                 }
+
                 printer.printFormattedText(formattedText)
+                Thread.sleep(1500)
+
             } catch (e: Exception) {
-                Toast.makeText(this, "Error printing: ${e.message}", Toast.LENGTH_SHORT).show()
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        this@FamilyActivity,
+                        "Error: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            } finally {
+                try {
+                    printerConnection.disconnect()
+                } catch (e: Exception) {
+                }
+                withContext(Dispatchers.Main) { binding.btnPrint.isEnabled = true }
             }
-        } ?: run {
-            Toast.makeText(this, "No printer selected.", Toast.LENGTH_SHORT).show()
+
+            withContext(Dispatchers.Main) {
+                Toast.makeText(this@FamilyActivity, "Printing Completed!", Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
     }
 
@@ -500,42 +560,54 @@ class FamilyActivity : BaseActivity(), OnClickListener {
 
     fun shareImageWhatsApp(bmp: Bitmap) {
         shareNumber = shareNumber.replace("+", "")
-        if (shareNumber.isNullOrEmpty() || checkContacts(shareNumber) == 1) {
+        if (checkContacts(shareNumber) == 1 || shareNumber.isNullOrEmpty()) {
             val time = System.currentTimeMillis()
             val share = Intent("android.intent.action.MAIN")
             share.action = Intent.ACTION_SEND
             share.type = "image/*"
-            val bytes = ByteArrayOutputStream()
-            bmp.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-            val f = File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    .toString() + File.separator + "share_file_${voter?.villageNo}.jpg"
-            )
-            try {
-                if (f.exists()) {
-                    f.delete()
-                }
-                f.createNewFile()
-                FileOutputStream(f).write(bytes.toByteArray())
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            shareNumber = shareNumber.replace("+", "")
-            if (shareNumber.length == 10) {
-                shareNumber = "91$shareNumber"
-            }
-            Log.e("aaa", shareNumber + "-")
-            share.putExtra(Intent.EXTRA_STREAM, Uri.parse(f.absolutePath))
             val msg = generateMessage(true)
-            share.putExtra(Intent.EXTRA_TEXT, msg)
-            share.putExtra(
-                "jid",
-                PhoneNumberUtils.stripSeparators(shareNumber) + "@s.whatsapp.net"
-            )
-            share.addFlags(268435456)
-//        if (isPackageInstalled("com.whatsapp", this)) {
-            share.setPackage(pickWhatsappPackageName())
-            startActivity(Intent.createChooser(share, "Share Image"))
+            var bitmap = bmp
+            if (isPackageInstalled("com.whatsapp", this) || isPackageInstalled(
+                    "com.whatsapp.w4b",
+                    this
+                )
+            ) {
+//                val packageName = pickWhatsappPackageName()
+//                if (packageName == "com.whatsapp.w4b") {
+//                    bitmap = createImageFileFromBitmapAndText(bmp, msg)
+//                }
+                bitmap = createImageFileFromBitmapAndText(bmp, msg)
+                val bytes = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+                val f = File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                        .toString() + File.separator + "temporary_file_${time}.jpg"
+                )
+                try {
+                    if (f.exists()) {
+                        f.delete()
+                    }
+                    f.createNewFile()
+                    FileOutputStream(f).write(bytes.toByteArray())
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+                share.putExtra(
+                    Intent.EXTRA_STREAM,
+                    Uri.parse(
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                            .toString() + File.separator + "temporary_file_${time}.jpg"
+                    )
+                )
+//                share.putExtra(Intent.EXTRA_TEXT, msg)
+                share.putExtra(
+                    "jid",
+                    PhoneNumberUtils.stripSeparators(shareNumber) + "@s.whatsapp.net"
+                )
+
+                share.setPackage(pickWhatsappPackageName())
+                startActivity(Intent.createChooser(share, "Share Image"))
+            }
         } else {
             val intent = Intent(Intent.ACTION_INSERT, ContactsContract.Contacts.CONTENT_URI)
             intent.putExtra(ContactsContract.Intents.Insert.PHONE, shareNumber)
@@ -584,20 +656,20 @@ class FamilyActivity : BaseActivity(), OnClickListener {
         } else {
             if (voterList.isNotEmpty()) {
                 voterList.forEach {
-                    msg += getString(R.string.voter_name) + " :-  " + it.voterName +
-                            "\n" + getString(R.string.voter_no) + " :-  " + it.voterNo +
-                            "\n" + getString(R.string.epic_no) + " :-  " + it.cardNo +
-                            "\n" + getString(R.string.polling_station) + " :- " + booth?.getName()
-                    msg += "\n-------------------------------------------\n"
+                    msg += getString(R.string.voter_name) + " :-  " + it.voter.voterName +
+                            "\n" + getString(R.string.voter_no) + " :-  " + it.voter.voterNo +
+                            "\n" + getString(R.string.epic_no) + " :-  " + it.voter.cardNo +
+                            "\n" + getString(R.string.polling_station) + " :- " + it.boothName
+                    msg += "\n----------------------------------------------------\n"
                 }
             }
-            if (isAddFooter && !Prefs.setting?.message.isNullOrEmpty()) {
-                msg += Prefs.setting?.message + "\n"
+            if (isAddFooter && !selectedVillageSetting?.message.isNullOrEmpty()) {
+                msg += selectedVillageSetting?.message + "\n"
             }
 
             if (!date.isNullOrEmpty() && !time.isNullOrEmpty()) {
-                msg += getString(R.string.voting_date) + " :-  " + date +
-                        "\n" + getString(R.string.voting_time) + " :-  " + time
+                msg += getString(R.string.voting_date) + " :-  " + (date ?: "-") +
+                        "\n" + getString(R.string.voting_time) + " :-  " + (time ?: "-")
             }
         }
         return msg
@@ -611,19 +683,20 @@ class FamilyActivity : BaseActivity(), OnClickListener {
         } else {
 
             for (i in voterList.indices) {
-                val voter = voterList[i]
-                if (mobile.isNotEmpty() && voter.mobileNo.isNullOrEmpty()) {
-                    voter.mobileNo = mobile
+                val familyVoterDto = voterList[i]
+                if (mobile.isNotEmpty() && familyVoterDto.voter.mobileNo.isNullOrEmpty()) {
+                    familyVoterDto.voter.mobileNo = mobile
                 }
                 if (cast.castNo != 0L) {
-                    voter.castNo = cast.castNo
+                    familyVoterDto.voter.castNo = cast.castNo
                 }
                 if (!selectedStatus.isNullOrEmpty() && selectedStatus != Enums.Status.SELECT.toString()) {
-                    voter.voterStatusName = selectedStatus
+                    familyVoterDto.voter.voterStatusName = selectedStatus
                 }
-                voter.updated = 1
+                familyVoterDto.voter.updated = 1
+                familyVoterDto.voter.userId = Prefs.user?.userId?.toLong() ?: 0
                 CoroutineScope(Dispatchers.Main).launch {
-                    commonViewModel.getDB().voterDao().insert(voter)
+                    commonViewModel.getDB().voterDao().insert(familyVoterDto.voter)
                     if (i == voterList.size - 1) {
                         setResult(Activity.RESULT_OK)
                         finish()
@@ -777,7 +850,7 @@ class FamilyActivity : BaseActivity(), OnClickListener {
     private fun initAdapter() {
         voterListAdapter = FamilyMemberListAdapter(voterList).apply {
             voterClickListener = object : FamilyMemberListAdapter.VoterClickListener {
-                override fun onItemClick(voter: Voter) {
+                override fun onItemClick(familyVoterDto: FamilyVoterDto) {
                     showUpdateVoterDialog(voter)
                 }
 
@@ -786,7 +859,7 @@ class FamilyActivity : BaseActivity(), OnClickListener {
                     makePhoneCall()
                 }
 
-                override fun removeFamilyMembe(voter: Voter) {
+                override fun removeFamilyMembe(familyVoterDto: FamilyVoterDto) {
                     AlertDialogManager.showConfirmationDialog(
                         this@FamilyActivity,
                         getString(R.string.app_name),
@@ -799,8 +872,11 @@ class FamilyActivity : BaseActivity(), OnClickListener {
                             override fun onButton1Clicked() {
                                 CoroutineScope(Dispatchers.Main).launch {
                                     commonViewModel.getDB().voterDao()
-                                        .updateVoterUnderFamily(voter._id, voter.houseNo + "_")
-                                    voterList.remove(voter)
+                                        .updateVoterUnderFamily(
+                                            familyVoterDto.voter._id,
+                                            familyVoterDto.voter.houseNo + "_"
+                                        )
+                                    voterList.remove(familyVoterDto)
                                     voterListAdapter?.notifyDataSetChanged()
                                 }
                             }
@@ -815,15 +891,18 @@ class FamilyActivity : BaseActivity(), OnClickListener {
                     )
                 }
 
-                override fun onHeadChanged(voter: Voter) {
+                override fun onHeadChanged(familyVoterDto: FamilyVoterDto) {
                     CoroutineScope(Dispatchers.Main).launch {
-                        commonViewModel.getDB().voterDao().insert(voter)
+                        commonViewModel.getDB().voterDao().insert(familyVoterDto.voter)
                         prefilledMobile()
                     }
                 }
 
-                override fun onRelativeClick(voter: Voter) {
-                    RelativeListActivity.startActivity(this@FamilyActivity, voter?.cardNo)
+                override fun onRelativeClick(familyVoterDto: FamilyVoterDto) {
+                    RelativeListActivity.startActivity(
+                        this@FamilyActivity,
+                        familyVoterDto.voter.cardNo
+                    )
                 }
             }
         }
@@ -892,9 +971,9 @@ class FamilyActivity : BaseActivity(), OnClickListener {
                     voter?.professionNo = profession.professionNo
                 }
                 voter?.updated = 1
-                val index = voterList.indexOfFirst { it._id == voter?._id }
+                val index = voterList.indexOfFirst { it.voter._id == voter?._id }
                 if (index != -1) {
-                    voterList[index] = voter!!
+                    voterList[index].voter = voter!!
                 }
                 voterListAdapter?.notifyDataSetChanged()
                 prefilledMobile()
@@ -958,16 +1037,25 @@ class FamilyActivity : BaseActivity(), OnClickListener {
         return super.onOptionsItemSelected(item)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private val updateLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK && it.data != null) {
                 val voter1: Voter? = it.data?.getParcelableExtra(IntentConstants.VOTER)
                 if (voter1 != null) {
-                    val v = voterList.find { voter -> voter._id == voter1._id }
+                    val v =
+                        voterList.find { familyVoterDto -> familyVoterDto.voter._id == voter1._id }
                     if (v == null) {
-                        voterList.add(voter1)
-                        voterListAdapter?.notifyDataSetChanged()
-                        updateFamilyCompleteBtn()
+                        CoroutineScope(Dispatchers.Main).launch {
+                            val familyVoterDto = FamilyVoterDto()
+                            familyVoterDto.voter = voter1
+                            val booth =
+                                voterViewModel.getDB().BoothDao().getBoothByNo(voter1.boothNo)
+                            familyVoterDto.boothName = booth?.getName()
+                            voterList.add(familyVoterDto)
+                            voterListAdapter?.notifyDataSetChanged()
+                            updateFamilyCompleteBtn()
+                        }
                     }
                 }
             }

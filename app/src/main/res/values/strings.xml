@@ -316,4 +316,22 @@
     <string name="pls_upload_share_image">Please upload share image</string>
     <string name="pls_select_share_image">Please select share image</string>
     <string name="pls_select_print_image">Please select print image</string>
+    <string name="search_by_full_name">Search By Full Name</string>
+    <string name="search_voter_like" translatable="false">Search Voter like Dig Hun Gaik</string>
+    <string name="button_scan">Scan for new devices</string>
+    <string name="scanning">Scanning devices...</string>
+    <string name="select_device">Please select a device to connect to</string>
+    <string name="none_paired">No matching device</string>
+    <string name="has_paired">Already paired</string>
+    <string name="not_paired">Not paired</string>
+    <string name="rePaire_connect">Pair and connect again</string>
+    <string name="unpair">Unpair</string>
+    <string name="paire_connect">Pair and connect</string>
+    <string name="connect_paired">connect</string>
+    <string name="gotoSettings">set up</string>
+    <string name="button_back">return</string>
+    <string name="none_found">device not found</string>
+    <string name="no_bounded_device">No device found with name starting with %s</string>
+    <string name="title_paired_devices">Paired device</string>
+    <string name="select_options">Select action</string>
 </resources>

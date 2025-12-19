@@ -9,14 +9,15 @@ import android.widget.CompoundButton
 import androidx.recyclerview.widget.RecyclerView
 import com.ems.lite.admin.R
 import com.ems.lite.admin.databinding.ItemFamilyMemberBinding
+import com.ems.lite.admin.model.dto.FamilyVoterDto
 import com.ems.lite.admin.model.table.Voter
 import com.ems.lite.admin.utils.BindingViewHolder
 
 
 internal class FamilyMemberListAdapter(
-    items: ArrayList<Voter>, private val isFromReportDay: Boolean = false
+    items: ArrayList<FamilyVoterDto>, private val isFromReportDay: Boolean = false
 ) : RecyclerView.Adapter<BindingViewHolder<ItemFamilyMemberBinding>>() {
-    private var items: ArrayList<Voter> = arrayListOf()
+    private var items: ArrayList<FamilyVoterDto> = arrayListOf()
     private lateinit var context: Context
     var voterClickListener: VoterClickListener? = null
     private var isBinding = false
@@ -42,20 +43,20 @@ internal class FamilyMemberListAdapter(
         holder: BindingViewHolder<ItemFamilyMemberBinding>, position: Int
     ) {
         isBinding = true
-        val voter = items[position]
-        holder.binding.voter = voter
+        val familyVoterDto = items[position]
+        holder.binding.familyVoterDto = familyVoterDto
         holder.binding.voterClickListener = voterClickListener
         holder.binding.tvMobileNumber.visibility = if (isFromReportDay) View.VISIBLE else View.GONE
-        holder.binding.headSwitch.isChecked = (voter.familyHead == 1)
+        holder.binding.headSwitch.isChecked = (familyVoterDto.voter.familyHead == 1)
         holder.binding.tvRelative.visibility =
-            if (voter.familyHead == 1) View.VISIBLE else View.GONE
+            if (familyVoterDto.voter.familyHead == 1) View.VISIBLE else View.GONE
         holder.binding.headSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
             if (!isBinding) {
-                voter.familyHead = if (isChecked) 1 else 0
-                voter.updated = 1
+                familyVoterDto.voter.familyHead = if (isChecked) 1 else 0
+                familyVoterDto.voter.updated = 1
                 holder.binding.tvRelative.visibility =
-                    if (voter.familyHead == 1) View.VISIBLE else View.GONE
-                voterClickListener?.onHeadChanged(voter)
+                    if (familyVoterDto.voter.familyHead == 1) View.VISIBLE else View.GONE
+                voterClickListener?.onHeadChanged(familyVoterDto)
             }
         })
         holder.binding.executePendingBindings()
@@ -67,10 +68,10 @@ internal class FamilyMemberListAdapter(
     }
 
     interface VoterClickListener {
-        fun onItemClick(voter: Voter)
+        fun onItemClick(familyVoterDto: FamilyVoterDto)
         fun onCallClick(mobileNo: String?)
-        fun removeFamilyMembe(voter: Voter)
-        fun onHeadChanged(voter: Voter)
-        fun onRelativeClick(voter: Voter)
+        fun removeFamilyMembe(familyVoterDto: FamilyVoterDto)
+        fun onHeadChanged(familyVoterDto: FamilyVoterDto)
+        fun onRelativeClick(familyVoterDto: FamilyVoterDto)
     }
 }

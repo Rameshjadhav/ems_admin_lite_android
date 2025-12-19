@@ -68,6 +68,7 @@ class SettingActivity : ImagePicker(), View.OnClickListener {
         binding.rbVoting.isChecked = !Prefs.isGeneralMsg
         binding.rbWithImage.isChecked = Prefs.isWithImageMsg
         binding.rbWithoutImage.isChecked = !Prefs.isWithImageMsg
+        binding.switchFullSearch.isChecked = Prefs.isFullSearch
         initObserver()
         initSpinnerAdapter()
         initClickListener()
@@ -270,7 +271,7 @@ class SettingActivity : ImagePicker(), View.OnClickListener {
                     parent: AdapterView<*>?, view: View?, position: Int, id: Long
                 ) {
                     if (position != 0) {
-                        selectedPrinter = bluetoothPrinters.getOrNull(position - 1)
+                        selectedPrinter = bluetoothPrinters.getOrNull(position - 1)?.device
                         Prefs.printerName = deviceNames[position - 1]
                     }
                 }
@@ -282,6 +283,9 @@ class SettingActivity : ImagePicker(), View.OnClickListener {
 
     private fun initClickListener() {
         binding.onClickListener = this
+        binding.switchFullSearch.setOnCheckedChangeListener { buttonView, isChecked ->
+            Prefs.isFullSearch = isChecked
+        }
         binding.rgMessageType.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
                 R.id.rb_general -> {

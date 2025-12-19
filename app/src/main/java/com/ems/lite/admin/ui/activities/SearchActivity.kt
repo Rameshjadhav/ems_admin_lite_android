@@ -24,6 +24,7 @@ import com.ems.lite.admin.utils.AlertDialogManager
 import com.ems.lite.admin.utils.CommonUtils
 import com.ems.lite.admin.utils.IntentConstants
 import com.ems.lite.admin.utils.IntentUtils
+import com.ems.lite.admin.utils.Prefs
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,6 +43,8 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
     private var cardNo: String? = null
     private var surname: String? = null
     private var houseNo: String? = null
+    private var isFullSearch = Prefs.isFullSearch
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +63,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
             villageName = getString(R.string.all)
             villageNameEng = getString(R.string.all)
         }
+        updateSearchView()
         updateVillage()
         cardNo = intent.getStringExtra(IntentConstants.CARD_NO)
         surname = intent.getStringExtra(IntentConstants.SURNAME)
@@ -128,15 +132,55 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
                 }
 
                 else -> {
-                    commonViewModel.getDB().voterDao()
-                        .searchVoter(
-                            binding.etFirstName.text.toString().trim(),
-                            binding.etMiddleName.text.toString().trim(),
-                            binding.etLastName.text.toString().trim(),
+                    if (isFullSearch) {
+                        val stringBuilder = StringBuilder()
+                        val stringBuilder1 = StringBuilder()
+
+
+                        val split = search.split(" ")
+                        stringBuilder.append("%")
+                        if (split.size > 1) {
+                            split.forEach {
+                                stringBuilder.append(it)
+                                stringBuilder.append("%")
+                            }
+                            if (split.size == 3) {
+                                stringBuilder1.append("%")
+                                stringBuilder1.append(split[2])
+                                stringBuilder1.append("%")
+                                stringBuilder1.append(split[0])
+                                stringBuilder1.append("%")
+                                stringBuilder1.append(split[1])
+                                stringBuilder1.append("%")
+                            } else {
+                                stringBuilder1.append("%")
+                                split.reversed().forEach {
+                                    stringBuilder1.append(it)
+                                    stringBuilder1.append("%")
+                                }
+                            }
+                        } else {
+                            stringBuilder.append(search)
+                            stringBuilder.append("%")
+                        }
+                        commonViewModel.getDB().voterDao().searchVoter(
+                            stringBuilder.toString(),
+                            stringBuilder1.toString(),
                             selectedVillage!!.villageNo,
                             selectedBooth!!.boothNo,
                             offset * 20
                         )
+                    } else {
+                        commonViewModel.getDB().voterDao()
+                            .searchVoter(
+                                binding.etFirstName.text.toString().trim(),
+                                binding.etMiddleName.text.toString().trim(),
+                                binding.etLastName.text.toString().trim(),
+                                selectedVillage!!.villageNo,
+                                selectedBooth!!.boothNo,
+                                offset * 20
+                            )
+                    }
                 }
             }
 
@@ -164,9 +208,9 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
         binding.rgSearchBy.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.rb_voter_name -> {
-                    binding.crNameSearch.visibility = View.VISIBLE
-                    binding.etSearch.visibility = View.GONE
+                    binding.etSearch.setHint(getString(R.string.search_voter_like))
                     binding.etSearch.setText("")
+                    updateSearchView()
                 }
 
                 R.id.rb_voter_no,
@@ -174,6 +218,8 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
                 R.id.rb_house_no -> {
                     binding.crNameSearch.visibility = View.GONE
                     binding.etSearch.visibility = View.VISIBLE
+                    binding.etSearch.setHint(getString(R.string.search_all))
+                    binding.etSearch.setText("")
                     binding.etFirstName.setText("")
                     binding.etMiddleName.setText("")
                     binding.etLastName.setText("")
@@ -184,6 +230,16 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
         binding.etFirstName.addTextChangedListener(textWatcher)
         binding.etMiddleName.addTextChangedListener(textWatcher)
         binding.etLastName.addTextChangedListener(textWatcher)
+    }
+
+    private fun updateSearchView() {
+        if (isFullSearch) {
+            binding.etSearch.visibility = View.VISIBLE
+            binding.crNameSearch.visibility = View.GONE
+        } else {
+            binding.etSearch.visibility = View.GONE
+            binding.crNameSearch.visibility = View.VISIBLE
+        }
     }
 
     private val textWatcher = object : TextWatcher {

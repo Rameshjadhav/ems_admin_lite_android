@@ -26,6 +26,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import com.dantsu.escposprinter.EscPosPrinter
 import com.dantsu.escposprinter.textparser.PrinterTextParserImg
 import com.ems.lite.admin.R
@@ -48,12 +49,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.Calendar
+import com.ems.lite.admin.print.InsecureBluetoothConnection
 
 
 @AndroidEntryPoint
@@ -368,14 +371,19 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun print() {
-        selectedPrinter?.let { printerConnection ->
-            try {
-                val printer = EscPosPrinter(printerConnection, 203, 48f, 32)
-//                val jsonArray = JSONArray(jsonData)
+        date = selectedVillageSetting?.votingDate
+        time = selectedVillageSetting?.votingTime
+        binding.btnPrint.isEnabled = false
+        lifecycleScope.launch(Dispatchers.IO) {
+            val printerConnection = InsecureBluetoothConnection(selectedPrinter!!)
 
-                // Define maximum width based on your printer's width
-                val maxWidth = 40 // Adjust this based on your printer's width for the main content
+            try {
+                // 1. Connect explicitly
+                printerConnection.connect()
+
+                val printer = EscPosPrinter(printerConnection, 205, 48f, 32)
                 val titleBitmap = TitleBitmap(getString(R.string.voter_detail))
+                val maxWidth = 46
                 val nameBitmaps = wrapText(
                     getString(R.string.voter_name) + " :-  " + voter?.voterName,
                     maxWidth
@@ -397,26 +405,37 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
                 ).map { textToBitmap(it) }
 
                 val dateBitmaps = wrapText(
-                    getString(R.string.voting_date) + " :-  " + (date?:"-"),
+                    getString(R.string.voting_date) + " :-  " + (date ?: "-"),
                     maxWidth
                 ).map { textToBitmap(it) }
 
                 val timeBitmaps = wrapText(
-                    getString(R.string.voting_time) + " :-  " + (time?:"-"),
+                    getString(R.string.voting_time) + " :-  " + (time ?: "-"),
                     maxWidth
                 ).map { textToBitmap(it) }
 
-
+//                PrinterTextParserImg.bitmapToHexadecimalString(
+//                    printer, selectedVillageSetting?.printImageBitmap
+//                )
                 val formattedText = buildString {
 
-                    if (selectedVillageSetting?.printImageBitmap != null && Prefs.isWithImageMsg)
+                    if (selectedVillageSetting?.printImageBitmap != null && Prefs.isWithImageMsg) {
+                        val resizedBitmap =
+//                            if (width != selectedVillageSetting?.printImageBitmap!!.width) {
+                            resizeBitmapFor2InchPrinter(
+                                selectedVillageSetting?.printImageBitmap!!, 1200
+                            )
+//                            } else {
+//                                selectedVillageSetting?.printImageBitmap!!
+//                            }
                         append(
                             "[C]<img>${
                                 PrinterTextParserImg.bitmapToHexadecimalString(
-                                    printer, selectedVillageSetting?.printImageBitmap
+                                    printer, resizedBitmap
                                 )
                             }</img>\n"
                         )
+                    }
                     append(
                         "[C]<img>${
                             PrinterTextParserImg.bitmapToHexadecimalString(
@@ -462,21 +481,6 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
                         )
                     }
                     append("------------------\n")
-//                        if (isAddFooter && !Prefs.footerMessage.isNullOrEmpty()) {
-//                            val footerMessageBitmaps = wrapText(
-//                                Prefs.footerMessage!!,
-//                                maxWidth
-//                            ).map { textToBitmap(it) }
-//                            footerMessageBitmaps.forEach { bitmap ->
-//                                append(
-//                                    "[L]<img>${
-//                                        PrinterTextParserImg.bitmapToHexadecimalString(
-//                                            printer, bitmap
-//                                        )
-//                                    }</img>\n\n"
-//                                )
-//                            }
-//                        }
 
                     dateBitmaps.forEach { bitmap ->
                         append(
@@ -498,14 +502,27 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
                     }
                 }
 
-                Log.d("PRINT_DEBUG", "Print Text: $formattedText")
                 printer.printFormattedText(formattedText)
+                Thread.sleep(1500)
             } catch (e: Exception) {
-                Log.e("PRINT_ERROR", "Error printing: ${e.message}")
-                Toast.makeText(this, "Error printing: ${e.message}", Toast.LENGTH_SHORT).show()
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    CommonUtils.showErrorMessage(
+                        this@VoterDetailsActivity, "Error: ${e.message}",
+                    )
+                }
+            } finally {
+                try {
+                    printerConnection.disconnect()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                withContext(Dispatchers.Main) { binding.btnPrint.isEnabled = true }
             }
-        } ?: run {
-            Toast.makeText(this, "No printer selected.", Toast.LENGTH_SHORT).show()
+
+            withContext(Dispatchers.Main) {
+                CommonUtils.showToast(this@VoterDetailsActivity, "Printing Completed!")
+            }
         }
     }
 
@@ -866,45 +883,57 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
     private fun shareImageWhatsApp(bmp: Bitmap) {
         shareNumber = shareNumber.replace("+", "")
         val name = binding.tvName.text.toString()
-        if (shareNumber.isNullOrEmpty() || checkContacts(shareNumber) == 1) {
+        if (checkContacts(shareNumber) == 1 || shareNumber.isNullOrEmpty()) {
 
             val time = System.currentTimeMillis()
             val share = Intent("android.intent.action.MAIN")
             share.action = Intent.ACTION_SEND
+            share.type = "image/*"
             shareNumber = shareNumber.replace("+", "")
             if (shareNumber.length == 10) {
                 shareNumber = "91$shareNumber"
             }
-            Log.e("aaa", "$shareNumber-")
-
-            share.type = "image/*"
-            val bytes = ByteArrayOutputStream()
-            bmp.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-            val f = File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    .toString() + File.separator + "share_file_${voter?.villageNo}.jpg"
-            )
-            try {
-                if (f.exists()) {
-                    f.delete()
-                }
-                f.createNewFile()
-                FileOutputStream(f).write(bytes.toByteArray())
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            share.putExtra(Intent.EXTRA_STREAM, Uri.parse(f.absolutePath))
-
-//            val name = binding.etVotername.text.toString()
+            Log.e("aaa", shareNumber + "-")
             val msg = generateMessage(true)
-            share.putExtra(Intent.EXTRA_TEXT, msg)
-            share.putExtra(
-                "jid",
-                PhoneNumberUtils.stripSeparators(shareNumber) + "@s.whatsapp.net"
-            )
+            var bitmap = bmp
+            if (isPackageInstalled("com.whatsapp", this) || isPackageInstalled("com.whatsapp.w4b", this)) {
+//                val packageName = pickWhatsappPackageName()
+//                if (packageName == "com.whatsapp.w4b") {
+//                    bitmap = createImageFileFromBitmapAndText(bmp, msg)
+//                }
+                bitmap = createImageFileFromBitmapAndText(bmp, msg)
 
-            share.setPackage(pickWhatsappPackageName())
-            startActivity(Intent.createChooser(share, "Share Image"))
+                val bytes = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+                val f = File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                        .toString() + File.separator + "temporary_file_${time}.jpg"
+                )
+                try {
+                    if (f.exists()) {
+                        f.delete()
+                    }
+                    f.createNewFile()
+                    FileOutputStream(f).write(bytes.toByteArray())
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+                share.putExtra(
+                    Intent.EXTRA_STREAM,
+                    Uri.parse(
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                            .toString() + File.separator + "temporary_file_${time}.jpg"
+                    )
+                )
+//                share.putExtra(Intent.EXTRA_TEXT, msg)
+                share.putExtra(
+                    "jid",
+                    PhoneNumberUtils.stripSeparators(shareNumber) + "@s.whatsapp.net"
+                )
+
+                share.setPackage(pickWhatsappPackageName())
+                startActivity(Intent.createChooser(share, "Share Image"))
+            }
 
         } else {
             val intent = Intent(Intent.ACTION_INSERT, ContactsContract.Contacts.CONTENT_URI)
@@ -968,16 +997,17 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
                 msg += voter?.image
             }
         } else {
+
             msg += getString(R.string.voter_name) + " :-  " + voter?.voterName +
                     "\n" + getString(R.string.voter_no) + " :-  " + voter?.voterNo +
                     "\n" + getString(R.string.epic_no) + " :-  " + voter?.cardNo +
                     "\n" + getString(R.string.polling_station) + " :- " + booth?.getName() +
-                    "\n\n---------------------------------------\n\n"
-            if (isAddFooter && !Prefs.setting?.message.isNullOrEmpty()) {
-                msg += Prefs.setting?.message + "\n"
+                    "\n------------------------------------------------\n"
+            if (isAddFooter && !selectedVillageSetting?.message.isNullOrEmpty()) {
+                msg += selectedVillageSetting?.message + "\n"
             }
-            msg += getString(R.string.voting_date) + " :-  " + (date?:"-") +
-                    "\n" + getString(R.string.voting_time) + " :-  " + (time?:"-")
+            msg += getString(R.string.voting_date) + " :-  " + (date ?: "-") +
+                    "\n" + getString(R.string.voting_time) + " :-  " + (time ?: "-")
         }
         return msg
     }

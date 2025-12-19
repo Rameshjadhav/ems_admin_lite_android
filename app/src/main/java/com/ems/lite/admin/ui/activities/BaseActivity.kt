@@ -3,6 +3,7 @@ package com.ems.lite.admin.ui.activities
 import android.Manifest
 import android.app.ActivityManager
 import android.app.ProgressDialog
+import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -21,6 +22,9 @@ import android.os.Environment
 import android.os.PersistableBundle
 import android.provider.BaseColumns
 import android.provider.ContactsContract
+import android.text.Layout
+import android.text.StaticLayout
+import android.text.TextPaint
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,6 +35,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.graphics.scale
 import androidx.lifecycle.lifecycleScope
 import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection
 import com.ems.lite.admin.FetchVoterService
@@ -80,7 +85,7 @@ import kotlin.collections.ArrayList
 @AndroidEntryPoint
 open class BaseActivity : AppCompatActivity() {
     companion object {
-        var selectedPrinter: BluetoothConnection? = null
+        var selectedPrinter: BluetoothDevice? = null
         val settingList: ArrayList<Setting> = arrayListOf()
         var selectedVillageSetting: Setting? = null
 
@@ -490,6 +495,15 @@ open class BaseActivity : AppCompatActivity() {
         }
 
         return packageName
+    }
+
+    protected fun isPackageInstalled(pkg: String, context: Context): Boolean {
+        return try {
+            context.packageManager.getPackageInfo(pkg, 0)
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
     }
 
     fun downloadImageToBitmap(urlString: String, onResult: (Bitmap?) -> Unit) {
@@ -1150,4 +1164,49 @@ open class BaseActivity : AppCompatActivity() {
         return wrappedLines
     }
 
+    fun resizeBitmapFor2InchPrinter(bitmap: Bitmap, targetWidth: Int = 384): Bitmap {
+//        val width = bitmap.width
+        val height = bitmap.height
+
+//        val scale = targetWidth.toFloat() / width
+//        val targetHeight = (height * scale).toInt
+        return bitmap.scale(1200, 800, true)
+    }
+
+    fun createImageFileFromBitmapAndText(original: Bitmap, text: String): Bitmap {
+        val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.BLACK
+            textSize = 16f
+        }
+
+        val padding = 30
+        val maxTextWidth = original.width - padding * 2
+
+        val staticLayout = StaticLayout.Builder
+            .obtain(text, 0, text.length, textPaint, maxTextWidth)
+            .setAlignment(Layout.Alignment.ALIGN_NORMAL)
+            .setLineSpacing(10f, 1.0f)
+            .setIncludePad(false)
+            .build()
+
+        val newBitmap = Bitmap.createBitmap(
+            original.width,
+            original.height + staticLayout.height + padding * 2,
+            Bitmap.Config.ARGB_8888
+        )
+
+        val canvas = Canvas(newBitmap)
+        canvas.drawColor(Color.WHITE)
+
+        // draw original image
+        canvas.drawBitmap(original, 0f, 0f, null)
+
+        // move canvas to text position
+        canvas.save()
+        canvas.translate(padding.toFloat(), (original.height + padding).toFloat())
+        staticLayout.draw(canvas)
+        canvas.restore()
+
+        return newBitmap
+    }
 }

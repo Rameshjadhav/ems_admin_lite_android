@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.ems.lite.admin.model.Influencer
 import com.ems.lite.admin.model.Survey
+import com.ems.lite.admin.model.dto.FamilyVoterDto
 import com.ems.lite.admin.model.table.CountBy
 import com.ems.lite.admin.model.table.Voter
 
@@ -46,13 +47,22 @@ abstract class VoterDao {
         surname: String?, offset: Int
     ): List<Voter>?
 
+    @Transaction
     @Query(
-        "SELECT * FROM Voter WHERE (:villageNo ==0 OR villageNo == :villageNo) AND (:boothNo ==0 OR boothNo == :boothNo) AND (voterFNameEng LIKE :firstName||'%' OR voterFName LIKE :firstName||'%' OR :firstName='') AND (voterMNameEng LIKE :middleName||'%' OR voterMName LIKE :middleName||'%' OR  :middleName='') and (voterLNameEng LIKE :lastName||'%' OR  voterLName LIKE :lastName||'%' OR  :lastName='')   ORDER BY voterNo  LIMIT :offset,20"
+        "SELECT * FROM Voter WHERE  (:villageNo =0 OR villageNo = :villageNo) AND (:boothNo =0 OR boothNo = :boothNo) AND ((:searchName='' OR voterNameEng LIKE :searchName OR voterName LIKE :searchName) OR (:searchNameReverse='' OR voterNameEng LIKE :searchNameReverse OR voterName LIKE :searchNameReverse))  ORDER BY voterNo  LIMIT :offset,20"
+    )
+    abstract fun searchVoter(
+        searchName: String, searchNameReverse: String, villageNo: Long, boothNo: Long, offset: Int
+    ): List<Voter>?
+
+    @Transaction
+    @Query(
+        "SELECT * FROM Voter WHERE  (:villageNo =0 OR villageNo = :villageNo) AND (:boothNo =0 OR boothNo = :boothNo) AND (voterFNameEng LIKE :firstName||'%' OR voterFName LIKE :firstName||'%' OR :firstName='') AND (voterMNameEng LIKE '%'||:middleName||'%' OR voterMName LIKE '%'||:middleName||'%' OR  :middleName='') and (voterLNameEng LIKE :lastName||'%' OR  voterLName LIKE :lastName||'%' OR  :lastName='')   ORDER BY voterNo  LIMIT :offset,20"
     )
     abstract fun searchVoter(
         firstName: String, middleName: String, lastName: String,
-        villageNo: Long, boothNo: Long,
-        offset: Int
+
+        villageNo: Long, boothNo: Long, offset: Int
     ): List<Voter>?
 
     @Query(
@@ -515,8 +525,17 @@ abstract class VoterDao {
         boothNo: Long, name: String
     ): List<Voter>?
 
-    @Query("SELECT * FROM Voter WHERE   (houseNo == NULL OR houseNo == :houseNo) ORDER BY age DESC")
-    abstract fun getFamilyList(houseNo: String?): List<Voter>?
+    @Query(
+        "SELECT v.*, " +
+                "CASE " +
+                "WHEN :lang = 'en' THEN b.boothNameEng ELSE b.boothName END AS boothName " +
+                "FROM Voter v " +
+                "LEFT JOIN Booth b ON (b.villageNo=v.villageNo AND b.boothNo=v.boothNo) " +
+                "WHERE  (houseNo = :houseNo) ORDER BY age DESC"
+    )
+    abstract fun getFamilyList(
+        houseNo: String?, lang: String
+    ): List<FamilyVoterDto>?
 
     @Query("UPDATE  Voter  SET  castNo =:cast, updated = 1 where (LOWER(voterLNameEng) = LOWER(:surname) OR LOWER(voterLName) = LOWER(:surname)) AND  villageNo=:villageNo  AND  (:boothNo ==0 OR boothNo == :boothNo)")
     abstract fun updateCastBySurnameWard(

@@ -28,6 +28,7 @@ object Prefs {
     private const val IS_WITH_IMAGE_MSG = "is_with_image_msg"
     private const val PRINTER_NAME = "printer_name"
     private const val MAIN_BANNER_URL = "MAIN_BANNER_URL"
+    private const val IS_FULL_SEARCH = "IS_FULL_SEARCH"
 
     private val prefs: SharedPreferences =
         MyApplication.instance!!.applicationContext!!.getSharedPreferences(PREFS_FILENAME, 0)
@@ -68,7 +69,9 @@ object Prefs {
         )
         set(value) = prefs.edit().putString(USER_OBJECT, gson.toJson(value))
             .apply()
-
+    var isFullSearch: Boolean
+        get() = prefs.getBoolean(IS_FULL_SEARCH, true)
+        set(value) = prefs.edit().putBoolean(IS_FULL_SEARCH, value).apply()
     var isLogin: Boolean
         get() = prefs.getBoolean(IS_LOGIN, false)
         set(value) = prefs.edit().putBoolean(IS_LOGIN, value).apply()

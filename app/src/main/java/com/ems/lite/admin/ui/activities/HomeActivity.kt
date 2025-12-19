@@ -78,7 +78,7 @@ class HomeActivity : BaseActivity() {
         val bluetoothDevicesList = BluetoothPrintersConnections().list ?: arrayOf()
         val printerName = Prefs.printerName
         selectedPrinter =
-            bluetoothDevicesList.filterNotNull().find { it.device?.name == printerName }
+            bluetoothDevicesList.filterNotNull().find { it.device?.name == printerName }?.device
     }
 
     private fun initClickListener() {
