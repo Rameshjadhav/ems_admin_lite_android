@@ -175,7 +175,9 @@ open class ImagePicker : BaseActivity() {
                     .setMultiTouchEnabled(false)
                     .setGuidelines(CropImageView.Guidelines.OFF)
                     .setCropShape(CropImageView.CropShape.RECTANGLE)
-                    .setRequestedSize(400, 400, CropImageView.RequestSizeOptions.RESIZE_EXACT)
+//                    .setRequestedSize(400, 400, CropImageView.RequestSizeOptions.RESIZE_EXACT)
+                    .setOutputCompressQuality(100)
+                    .setRequestedSize(1200, 1200, CropImageView.RequestSizeOptions.RESIZE_INSIDE)
                 if (isSquareRatio) {
                     builder.setAspectRatio(1, 1)
                 }

@@ -423,18 +423,21 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
                         val resizedBitmap =
 //                            if (width != selectedVillageSetting?.printImageBitmap!!.width) {
                             resizeBitmapFor2InchPrinter(
-                                selectedVillageSetting?.printImageBitmap!!, 1200
+                                selectedVillageSetting?.printImageBitmap!!, 384
                             )
 //                            } else {
 //                                selectedVillageSetting?.printImageBitmap!!
 //                            }
-                        append(
-                            "[C]<img>${
-                                PrinterTextParserImg.bitmapToHexadecimalString(
-                                    printer, resizedBitmap
-                                )
-                            }</img>\n"
-                        )
+                        val bitmapChunks = splitBitmapByHeight(resizedBitmap)
+                        for (chunk in bitmapChunks) {
+                            append(
+                                "[C]<img>${
+                                    PrinterTextParserImg.bitmapToHexadecimalString(
+                                        printer, chunk
+                                    )
+                                }</img>\n"
+                            )
+                        }
                     }
                     append(
                         "[C]<img>${
@@ -987,6 +990,8 @@ open class VoterDetailsActivity : BaseActivity(), View.OnClickListener {
         get() = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.System.canWrite(this)
 
     private fun generateMessage(isAddFooter: Boolean): String {
+        date = selectedVillageSetting?.votingDate
+        time = selectedVillageSetting?.votingTime
         var msg = ""
         if (Prefs.isGeneralMsg) {
             if (!voter?.message.isNullOrEmpty())

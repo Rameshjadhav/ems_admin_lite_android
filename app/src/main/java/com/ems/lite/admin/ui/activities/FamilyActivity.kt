@@ -381,18 +381,21 @@ class FamilyActivity : BaseActivity(), OnClickListener {
                         val resizedBitmap =
 //                            if (width != selectedVillageSetting?.printImageBitmap!!.width) {
                             resizeBitmapFor2InchPrinter(
-                                selectedVillageSetting?.printImageBitmap!!, width
+                                selectedVillageSetting?.printImageBitmap!!, 384
                             )
 //                            } else {
 //                                selectedVillageSetting?.printImageBitmap!!
 //                            }
-                        append(
-                            "[C]<img>${
-                                PrinterTextParserImg.bitmapToHexadecimalString(
-                                    printer, resizedBitmap
-                                )
-                            }</img>\n"
-                        )
+                        val bitmapChunks = splitBitmapByHeight(resizedBitmap)
+                        for (chunk in bitmapChunks) {
+                            append(
+                                "[C]<img>${
+                                    PrinterTextParserImg.bitmapToHexadecimalString(
+                                        printer, chunk
+                                    )
+                                }</img>\n"
+                            )
+                        }
                     }
                     append(
                         "[C]<img>${
@@ -644,6 +647,8 @@ class FamilyActivity : BaseActivity(), OnClickListener {
     }
 
     private fun generateMessage(isAddFooter: Boolean): String {
+        date = selectedVillageSetting?.votingDate
+        time = selectedVillageSetting?.votingTime
         var msg = ""
         if (Prefs.isGeneralMsg) {
             if (!voter?.message.isNullOrEmpty())

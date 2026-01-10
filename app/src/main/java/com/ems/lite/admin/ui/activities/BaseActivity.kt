@@ -1165,18 +1165,53 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun resizeBitmapFor2InchPrinter(bitmap: Bitmap, targetWidth: Int = 384): Bitmap {
-//        val width = bitmap.width
-        val height = bitmap.height
+//        var width = 1200
+//        var height = bitmap.height
+//        if (height < 800) {
+//            height = 800
+//        } else {
+//            height = (height * 2.6).toInt()
+//        }
+////        val scale = targetWidth.toFloat() / width
+////        val targetHeight = (height * scale).toInt
+//        return bitmap.scale(width, height, true)
+        val scale = targetWidth.toFloat() / bitmap.width
+        val targetHeight = (bitmap.height * scale).toInt()
+        return Bitmap.createScaledBitmap(bitmap, targetWidth, targetHeight, true)
+    }
 
-//        val scale = targetWidth.toFloat() / width
-//        val targetHeight = (height * scale).toInt
-        return bitmap.scale(1200, 800, true)
+    fun splitBitmapByHeight(
+        bitmap: Bitmap,
+        chunkHeight: Int = 256
+    ): List<Bitmap> {
+
+        val bitmaps = mutableListOf<Bitmap>()
+        var y = 0
+
+        while (y < bitmap.height) {
+            val height = if (y + chunkHeight > bitmap.height)
+                bitmap.height - y
+            else
+                chunkHeight
+
+            val chunk = Bitmap.createBitmap(
+                bitmap,
+                0,
+                y,
+                bitmap.width,
+                height
+            )
+            bitmaps.add(chunk)
+            y += chunkHeight
+        }
+
+        return bitmaps
     }
 
     fun createImageFileFromBitmapAndText(original: Bitmap, text: String): Bitmap {
         val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.BLACK
-            textSize = 16f
+            textSize =50f
         }
 
         val padding = 30

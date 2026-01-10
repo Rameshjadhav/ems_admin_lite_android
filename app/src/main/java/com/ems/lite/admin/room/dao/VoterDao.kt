@@ -49,7 +49,11 @@ abstract class VoterDao {
 
     @Transaction
     @Query(
-        "SELECT * FROM Voter WHERE  (:villageNo =0 OR villageNo = :villageNo) AND (:boothNo =0 OR boothNo = :boothNo) AND ((:searchName='' OR voterNameEng LIKE :searchName OR voterName LIKE :searchName) OR (:searchNameReverse='' OR voterNameEng LIKE :searchNameReverse OR voterName LIKE :searchNameReverse))  ORDER BY voterNo  LIMIT :offset,20"
+        "SELECT * FROM Voter WHERE  (:villageNo =0 OR villageNo = :villageNo) AND (:boothNo =0 OR boothNo = :boothNo) " +
+                "AND ((:searchName <> '' AND (voterNameEng LIKE :searchName OR voterName LIKE :searchName)) " +
+                "OR (:searchNameReverse <> '' AND (voterNameEng LIKE :searchNameReverse OR voterName LIKE :searchNameReverse)) " +
+                "OR (:searchName = '' AND :searchNameReverse = '')) " +
+                "ORDER BY voterNo  LIMIT :offset,20"
     )
     abstract fun searchVoter(
         searchName: String, searchNameReverse: String, villageNo: Long, boothNo: Long, offset: Int
